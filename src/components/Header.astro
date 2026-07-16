@@ -1,0 +1,280 @@
+---
+/**
+ * Header — Unified site header.
+ *
+ * Desktop: Logo right, Navigation left.
+ * Mobile: Logo right, Hamburger left + Glass Side Panel.
+ */
+import Logo from './Logo.astro';
+import Navigation from './Navigation.astro';
+
+interface Props {
+  currentPath?: string;
+}
+
+const { currentPath = '/' } = Astro.props;
+---
+
+<header class="site-header" id="site-header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <Logo />
+    </div>
+
+    <!-- Desktop Navigation -->
+    <div class="header__desktop-nav">
+      <Navigation currentPath={currentPath} />
+    </div>
+
+    <!-- Mobile Hamburger Toggle -->
+    <button
+      type="button"
+      class="header__toggle"
+      id="mobile-menu-toggle"
+      aria-label="فتح القائمة الرئيسية"
+      aria-expanded="false"
+      aria-controls="mobile-menu-panel"
+    >
+      <span class="hamburger">
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+        <span class="hamburger__line"></span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Mobile Side Panel -->
+  <div class="side-panel-overlay" id="mobile-menu-overlay" aria-hidden="true"></div>
+  <aside class="side-panel" id="mobile-menu-panel" aria-hidden="true">
+    <div class="side-panel__header">
+      <button
+        type="button"
+        class="side-panel__close"
+        id="mobile-menu-close"
+        aria-label="إغلاق القائمة"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 6L18 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="side-panel__content">
+      <Navigation currentPath={currentPath} layout="vertical" />
+    </div>
+    <div class="side-panel__footer">
+      <div class="side-panel__socials">
+        <a href="#" aria-label="إنستجرام" class="side-panel__social-link focus-visible">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <a href="#" aria-label="تيك توك" class="side-panel__social-link focus-visible">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path></svg>
+        </a>
+        <a href="#" aria-label="فيسبوك" class="side-panel__social-link focus-visible">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+        </a>
+        <a href="#" aria-label="يوتيوب" class="side-panel__social-link focus-visible">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+</header>
+
+<style>
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0; /* Remove left/right padding to touch edges */
+  }
+
+  /* Hamburger Toggle */
+  .header__toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    color: var(--color-primary);
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 24px;
+    height: 16px;
+  }
+
+  .hamburger__line {
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: currentColor;
+    border-radius: 2px;
+    transition: transform var(--duration-fast) var(--ease-smooth),
+                opacity var(--duration-fast) var(--ease-smooth);
+  }
+
+  /* Side Panel */
+  .side-panel-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: var(--color-primary-20);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--duration-normal) var(--ease-smooth);
+    z-index: calc(var(--z-header) + 1);
+  }
+
+  .side-panel-overlay.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .side-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    /* Slide in from the left side. Right side is inset-inline-start for RTL?
+       No, RTL has left = inline-end. So we use left: 0 or right: auto */
+    left: 0;
+    width: 80%;
+    max-width: 320px;
+    background: var(--color-glass);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid var(--color-glass-border);
+    z-index: calc(var(--z-header) + 2);
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-4);
+    transition: transform var(--duration-normal) var(--ease-smooth);
+    /* Initially off-screen to the left */
+    transform: translateX(-100%);
+  }
+
+  .side-panel.is-open {
+    transform: translateX(0) !important;
+  }
+
+  .side-panel__header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: var(--space-6);
+  }
+
+  .side-panel__close {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+  }
+
+  .side-panel__content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* allow content to take available space pushing footer down */
+  }
+
+  .side-panel__footer {
+    margin-top: auto;
+    padding-top: var(--space-4);
+  }
+
+  .side-panel__socials {
+    display: flex;
+    gap: var(--space-3);
+    align-items: center;
+    justify-content: center;
+  }
+
+  .side-panel__social-link {
+    color: var(--color-text-secondary);
+    opacity: 0.5;
+    transition: color var(--duration-fast) var(--ease-smooth), transform var(--duration-fast) var(--ease-smooth), opacity var(--duration-fast) var(--ease-smooth);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+  }
+
+  .side-panel__social-link:hover,
+  .side-panel__social-link:active {
+    color: var(--color-text-primary);
+    transform: translateY(-2px);
+    opacity: 1;
+  }
+
+  /* Responsive behavior */
+  @media (max-width: 767px) {
+    .header__desktop-nav {
+      display: none;
+    }
+
+    .header__toggle {
+      display: flex;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .side-panel,
+    .side-panel-overlay {
+      display: none !important;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const setupHeader = () => {
+      const toggleBtn = document.getElementById('mobile-menu-toggle');
+      const closeBtn = document.getElementById('mobile-menu-close');
+      const panel = document.getElementById('mobile-menu-panel');
+      const overlay = document.getElementById('mobile-menu-overlay');
+
+      if (!toggleBtn || !panel || !overlay) return;
+
+      const openMenu = () => {
+        panel.classList.add('is-open');
+        overlay.classList.add('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        panel.removeAttribute('aria-hidden');
+        document.body.style.overflow = 'hidden';
+      };
+
+      const closeMenu = () => {
+        panel.classList.remove('is-open');
+        overlay.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        panel.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      };
+
+      toggleBtn.addEventListener('click', openMenu);
+      closeBtn?.addEventListener('click', closeMenu);
+      overlay.addEventListener('click', closeMenu);
+
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && panel.classList.contains('is-open')) {
+          closeMenu();
+        }
+      });
+    };
+
+    setupHeader();
+
+    // Re-run setup after Astro view transitions
+    document.addEventListener('astro:page-load', setupHeader);
+  });
+</script>

@@ -1,0 +1,323 @@
+---
+/**
+ * Services — Marzoq
+ *
+ * Experience Page: 100vh locked on desktop.
+ * Left/Right split architecture to accommodate creative presentation of services.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import GlassPanel from '../components/GlassPanel.astro';
+import Footer from '../components/Footer.astro';
+import { getServices } from '../lib/wordpress.js';
+
+// Fallback content until WordPress is fully populated
+const fallbackServices = [
+  {
+    title: 'تهيئة محركات الذكاء الاصطناعي (AEO)',
+    why: 'هيكلة محتوى موقعك وبياناتك لتصبح المصدر الأول الذي تعتمد عليه نماذج اللغات الكبيرة (LLMs) عند الإجابة على أسئلة المستخدمين بدقة وموثوقية.',
+    short: 'AEO',
+  },
+  {
+    title: 'تطوير منصات الويب الذكية',
+    why: 'بناء منصات سريعة، مستدامة، ومبنية على أحدث المعماريات التقنية لضمان أداء فائق وتجربة مستخدم لا تُنسى وسهلة الفهم للآلة.',
+    short: 'تطوير',
+  },
+  {
+    title: 'هندسة المحتوى التقني',
+    why: 'كتابة محتوى متكامل يوازن بين الجاذبية البشرية والدقة التقنية والبيانات المنظمة التي تتطلبها خوارزميات البحث الحديثة.',
+    short: 'محتوى',
+  },
+];
+
+let cmsServices = [];
+try {
+  cmsServices = await getServices();
+} catch {
+  // Silent fail, will use fallback
+}
+
+const services =
+  cmsServices.length > 0
+    ? cmsServices.map((s) => ({
+        title: s.title?.rendered || '',
+        why: s.excerpt?.rendered?.replace(/<[^>]+>/g, '').trim() || s.acf?.why || '',
+        short: s.acf?.short_label || s.slug || '',
+      }))
+    : fallbackServices;
+---
+
+<BaseLayout
+  title="خدماتنا — مرزوق"
+  description="خدمات مرزوق تساعد شركتك على أن تكون أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي."
+>
+  <!-- is-locked class ensures 100vh constraint on desktop -->
+  <div class="page-content services-page is-locked">
+    <div class="layer-background" aria-hidden="true">
+      <div class="background__grid"></div>
+    </div>
+
+    <Header currentPath="/services" />
+
+    <main class="services__content" id="main-content">
+      <div class="services__layout">
+        <!-- Right Column (RTL): Intro (Top) & Card 1 (Bottom) -->
+        <div class="services__col services__col--right">
+          <div class="services__intro">
+            <h1 class="services__headline text-balance">كل خدمة نقدمها تخدم هدفًا واحدًا.</h1>
+            <p class="services__subtext">
+              ألا وهو؛ جعل علامتك التجارية <strong>"الإجابة الأولى والموثوقة"</strong> التي تقدمها أنظمة
+              الذكاء الاصطناعي ومحركات البحث المتقدمة لعملائك المحتملين.
+            </p>
+          </div>
+
+          {
+            services.length > 0 && (
+              <div class="service-card-wrapper">
+                <GlassPanel class="service-card" padding="md" radius="lg">
+                  <div class="service-card__header">
+                    <span class="service-card__number">01</span>
+                    <span class="service-card__label">{services[0].short}</span>
+                  </div>
+                  <h2 class="service-card__title">{services[0].title}</h2>
+                  <p class="service-card__desc">{services[0].why}</p>
+                </GlassPanel>
+              </div>
+            )
+          }
+        </div>
+
+        <!-- Left Column (RTL): Card 2 (Top) & Card 3 (Bottom) -->
+        <div class="services__col services__col--left">
+          {
+            services.slice(1, 3).map((service, index) => (
+              <div class="service-card-wrapper">
+                <GlassPanel class="service-card" padding="md" radius="lg">
+                  <div class="service-card__header">
+                    <span class="service-card__number">
+                      {(index + 2).toString().padStart(2, '0')}
+                    </span>
+                    <span class="service-card__label">{service.short}</span>
+                  </div>
+                  <h2 class="service-card__title">{service.title}</h2>
+                  <p class="service-card__desc">{service.why}</p>
+                </GlassPanel>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .services-page {
+  }
+
+  /* Desktop locked 100vh layout */
+  @media (min-width: 768px) {
+    .services-page.is-locked {
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    .services__content {
+      flex-grow: 1;
+      display: flex;
+      align-items: stretch;
+      overflow: hidden; /* Contains the internal scroll */
+      padding: 0;
+      min-height: 0; /* CRITICAL: Allows flex child to shrink */
+    }
+
+    .services__layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 2 equal columns */
+      grid-template-rows: 1fr 1fr; /* Define the 2 rows globally */
+      gap: var(--space-4); /* Reduced gap */
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      height: 100%;
+      min-height: 0;
+      align-items: stretch;
+      padding-top: var(--space-2);
+      padding-bottom: var(--space-2);
+    }
+
+    .services__col {
+      display: grid;
+      grid-template-rows: subgrid; /* Inherit rows from parent */
+      grid-row: span 2; /* Span both rows */
+      gap: var(--space-4); /* Reduced gap */
+      height: 100%;
+      min-height: 0;
+    }
+
+    .services__col--left {
+      overflow: hidden; /* Force no scroll as requested */
+    }
+
+    .services__intro {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      text-align: start;
+    }
+  }
+
+  /* Mobile Fallback (Flow layout) */
+  @media (max-width: 767px) {
+    .services__content {
+      display: flex;
+      flex-direction: column;
+      padding: var(--space-2) 0;
+    }
+    .services__layout {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+      width: 100%;
+      max-width: 1280px;
+      margin: 0 auto;
+      text-align: start;
+    }
+    .services__col {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-4);
+    }
+    .services__intro {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: start;
+      margin-bottom: var(--space-4);
+    }
+  }
+
+  .background__grid {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-primary-10) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-primary-10) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 0%, transparent 85%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 80% at 50% 50%, black 0%, transparent 85%);
+  }
+
+  /* Typography & Components */
+  .services__headline {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    color: var(--color-text-primary);
+    line-height: var(--leading-snug);
+    margin-bottom: var(--space-2);
+    text-align: start;
+  }
+
+  .services__subtext {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-3);
+    max-width: 90%;
+    text-align: start;
+  }
+
+  .services__subtext strong {
+    color: var(--color-primary);
+    font-weight: var(--weight-bold);
+  }
+
+  /* Service Card styling */
+  .service-card-wrapper {
+    transition: transform var(--duration-normal) var(--ease-spring);
+    display: flex;
+    height: 100%; /* Fill the grid row */
+  }
+
+  /* Make the card itself take full height of its wrapper */
+  :global(.service-card) {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+
+  .service-card-wrapper:hover {
+    transform: translateX(10px); /* Move slightly left in RTL */
+  }
+
+  :global(html[dir='ltr']) .service-card-wrapper:hover {
+    transform: translateX(-10px);
+  }
+
+  .service-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-2);
+    padding-bottom: var(--space-1);
+    border-bottom: 1px solid var(--color-glass-border);
+  }
+
+  .service-card__number {
+    font-family: var(--font-serif-display);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    opacity: 0.3;
+  }
+
+  .service-card__label {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    font-weight: var(--weight-bold);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    background: var(--color-primary-10);
+    padding: 2px 8px;
+    border-radius: var(--radius-full);
+  }
+
+  .service-card__title {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .service-card__desc {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+    text-align: start;
+  }
+
+  /* Mobile Tweaks */
+  @media (max-width: 767px) {
+    .services__headline {
+      font-size: var(--text-xl);
+      margin-bottom: var(--space-2);
+    }
+    .services__subtext {
+      font-size: var(--text-base);
+      max-width: 100%;
+    }
+    .services__layout {
+      padding: 0 var(--space-4);
+    }
+  }
+</style>

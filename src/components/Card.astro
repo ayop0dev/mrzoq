@@ -1,0 +1,81 @@
+---
+/**
+ * Card — a glass surface card for services, portfolio, and blog listings.
+ *
+ * Used on Archive pages and in Content Blocks.
+ */
+interface Props {
+  title: string;
+  description?: string;
+  href?: string;
+  meta?: string;
+}
+
+const { title, description, href, meta } = Astro.props;
+---
+
+{
+  href ? (
+    <a href={href} class="card focus-visible">
+      {meta && <span class="card__meta">{meta}</span>}
+      <h3 class="card__title">{title}</h3>
+      {description && <p class="card__description">{description}</p>}
+    </a>
+  ) : (
+    <div class="card">
+      {meta && <span class="card__meta">{meta}</span>}
+      <h3 class="card__title">{title}</h3>
+      {description && <p class="card__description">{description}</p>}
+    </div>
+  )
+}
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    padding: var(--space-3);
+    background: var(--color-glass);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: var(--color-primary);
+    transition: opacity var(--duration-fast) var(--ease-smooth);
+  }
+
+  a.card:hover {
+    opacity: 0.85;
+  }
+
+  .card__meta {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-secondary);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .card__title {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-snug);
+  }
+
+  .card__description {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card {
+      transition: none;
+    }
+  }
+</style>

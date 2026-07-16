@@ -1,0 +1,127 @@
+/*
+  Global CSS — Marzoq
+  Entry point for all shared styles.
+  Import this file once in the root layout.
+*/
+
+@import './tokens.css';
+@import './typography.css';
+@import './animations.css';
+@import './layout.css';
+@import './utilities.css';
+
+/* ─── Base Reset ─── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  background-color: var(--color-background); /* Fallback */
+}
+
+/* Pseudo-element for fixed gradient to avoid mobile/scrolling issues */
+html::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: var(--color-bg-gradient);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-regular);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* Unified Architectural Decision: Inner containers handle 1280px bound */
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ─── Typography Defaults ─── */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-sans);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-primary);
+}
+
+p {
+  line-height: var(--leading-relaxed);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+/* ─── Interactive Defaults ─── */
+button {
+  font: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 0;
+  border-radius: var(--radius-md);
+}
+
+/* ─── SVG Defaults ─── */
+svg {
+  overflow: visible;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background-color: var(--color-primary-20);
+  color: var(--color-primary);
+}

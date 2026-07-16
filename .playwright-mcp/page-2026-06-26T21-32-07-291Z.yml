@@ -1,0 +1,82 @@
+- main [ref=e1]:
+  - generic:
+    - generic:
+      - img
+      - generic:
+        - img:
+          - generic: M
+          - generic: Midjourney
+        - img:
+          - generic: أفضل مطعم في الرياض
+        - img:
+          - generic: G
+          - generic: ChatGPT
+        - img:
+          - generic: C
+          - generic: Claude
+        - img:
+          - generic: G
+          - generic: Gemini
+        - img:
+          - generic: P
+          - generic: Perplexity
+        - img:
+          - generic: Co
+          - generic: Copilot
+        - img:
+          - generic: أفضل شركة تشطيب في الرياض
+        - img:
+          - generic: Best ERP company in Saudi Arabia
+        - img:
+          - generic: أفضل مستشفى أطفال في جدة
+        - img:
+          - generic: best marketing agency Dubai
+        - img:
+          - generic: شركة برمجيات موثوقة في الكويت
+  - navigation "التنقل الرئيسي — Primary Navigation" [ref=e3]:
+    - img [ref=e5]
+    - navigation "وجهات التنقل — Navigation Destinations" [ref=e35]:
+      - link "الرئيسية — Home" [ref=e36] [cursor=pointer]:
+        - /url: /
+      - link "من نحن — About" [ref=e37] [cursor=pointer]:
+        - /url: /about
+      - link "خدماتنا — Services" [ref=e38] [cursor=pointer]:
+        - /url: /services
+      - link "تواصل معنا — Contact" [ref=e39] [cursor=pointer]:
+        - /url: /contact
+  - generic "المحتوى الرئيسي" [ref=e40]:
+    - generic [ref=e42]:
+      - heading "ساعد شركتك تكون الإجابة التي يقدمها الذكاء الاصطناعي" [level=1] [ref=e43]
+      - paragraph [ref=e44]: مرزوق يساعدك على أن تصبح أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي.
+      - link "ابدأ المحادثة" [ref=e46] [cursor=pointer]:
+        - /url: /contact
+        - generic: ابدأ المحادثة
+  - banner [ref=e47]:
+    - link "مرزوق — الرئيسية" [ref=e48] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e49]: مرزوق
+      - generic [ref=e50]: Marzoq
+    - navigation "التنقل الرئيسي" [ref=e51]:
+      - list [ref=e52]:
+        - listitem [ref=e53]:
+          - link "من نحن" [ref=e54] [cursor=pointer]:
+            - /url: /about
+        - listitem [ref=e55]:
+          - link "خدماتنا" [ref=e56] [cursor=pointer]:
+            - /url: /services
+        - listitem [ref=e57]:
+          - link "أعمالنا" [ref=e58] [cursor=pointer]:
+            - /url: /portfolio
+        - listitem [ref=e59]:
+          - link "المدونة" [ref=e60] [cursor=pointer]:
+            - /url: /blog
+    - link "تواصل معنا" [ref=e61] [cursor=pointer]:
+      - /url: /contact
+      - generic: تواصل معنا
+  - contentinfo [ref=e62]:
+    - paragraph [ref=e63]: © 2025 مرزوق. جميع الحقوق محفوظة.
+    - navigation "روابط ثانوية" [ref=e64]:
+      - link "الخصوصية" [ref=e65] [cursor=pointer]:
+        - /url: /privacy
+      - link "الشروط" [ref=e66] [cursor=pointer]:
+        - /url: /terms

@@ -1,0 +1,168 @@
+/*
+  Layout System — Marzoq
+  The viewport canvas and structural layout rules.
+
+  Experience Pages: 100vw × 100vh, no scrolling.
+  Content Pages:    100vw, vertical scrolling allowed.
+  Archive Pages:    100vw, lightweight listing layout.
+*/
+
+/* ─── Viewport Canvas (Experience Pages) ─── */
+.page-experience {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 100dvh; /* dvh handles mobile browser chrome correctly */
+  overflow: hidden;
+}
+
+/* ─── Homepage Layer Stack ─── */
+/*
+  Layer order (back → front):
+  1. Background (.layer-background)
+  2. Ecosystem  (.layer-ecosystem)
+  3. Compass    (.layer-compass)
+  4. Content    (.layer-content)
+  5. Header     (.layer-header)
+  6. Footer     (.layer-footer)
+*/
+
+.layer-background,
+.layer-ecosystem,
+.layer-compass,
+.layer-content,
+.layer-header,
+.layer-footer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none; /* each layer opts in to events */
+}
+
+.layer-background {
+  z-index: var(--z-background);
+  /* Decorative only — fully isolated from surrounding paint/layout */
+  contain: strict;
+}
+
+.layer-ecosystem {
+  z-index: var(--z-ecosystem);
+  /* Orbital objects are positioned within this viewport-filling layer */
+  contain: layout style;
+  top: 20px;
+}
+
+.layer-compass {
+  z-index: var(--z-compass);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  contain: layout style;
+  top: 20px;
+}
+
+.layer-content {
+  z-index: var(--z-content);
+  pointer-events: auto;
+  contain: layout style;
+  top: 20px;
+}
+
+.layer-header {
+  z-index: var(--z-header);
+  pointer-events: auto;
+  /* Header sits top of viewport, not full-height */
+  bottom: auto;
+  height: auto;
+}
+
+.layer-footer {
+  z-index: var(--z-footer);
+  pointer-events: auto;
+  /* Footer sits bottom of viewport, not full-height */
+  top: auto;
+  height: auto;
+}
+
+/* ─── Header Layout ─── */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-3) 0; /* No left/right padding */
+  width: 100%;
+}
+
+/* ─── Footer Layout ─── */
+.site-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-2) 0 var(--space-1) 0; /* No left/right padding */
+  width: 100%;
+}
+
+/* ─── Content Page Layout ─── */
+.page-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-2) 0;
+  width: 100%;
+}
+
+/* ─── Archive Page Layout ─── */
+.page-archive {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.archive-container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-2) 0;
+  width: 100%;
+}
+
+#main-content {
+  flex-grow: 1;
+}
+
+/* ─── Responsive Adjustments ─── */
+@media (max-width: 1199px) {
+  .site-header,
+  .site-footer {
+    padding-inline: var(--space-6);
+  }
+}
+
+@media (max-width: 767px) {
+  .site-header {
+    padding-inline: var(--space-4);
+    padding-block: var(--space-2);
+  }
+
+  .site-footer {
+    padding-inline: var(--space-4);
+    padding-block: var(--space-1) var(--space-2);
+    flex-direction: column;
+    gap: 4px;
+    justify-content: center;
+  }
+
+  .content-container {
+    padding: var(--space-6) var(--space-4);
+  }
+
+  .archive-container {
+    padding: var(--space-4) var(--space-4);
+  }
+}

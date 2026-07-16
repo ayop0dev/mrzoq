@@ -1,0 +1,143 @@
+---
+/**
+ * Ecosystem — Marzoq Core Component
+ *
+ * The digital environment surrounding the Compass.
+ * Visualizes AI platforms, user queries, and the digital space where
+ * businesses compete for AI discoverability.
+ *
+ * Distributed using the Golden Spiral algorithm for a balanced, non-random
+ * layout covering the entire screen space.
+ */
+import PlatformToken from './PlatformToken.astro';
+import QueryPill from './QueryPill.astro';
+
+const platforms = [
+  { id: 'chatgpt', name: 'ChatGPT', iconLabel: 'G' },
+  { id: 'claude', name: 'Claude', iconLabel: 'C' },
+  { id: 'gemini', name: 'Gemini', iconLabel: 'G' },
+  { id: 'copilot', name: 'Copilot', iconLabel: 'Co' },
+  { id: 'perplexity', name: 'Perplexity', iconLabel: 'P' },
+  { id: 'midjourney', name: 'Midjourney', iconLabel: 'M' },
+  { id: 'notion', name: 'Notion AI', iconLabel: 'N' },
+  { id: 'jasper', name: 'Jasper', iconLabel: 'J' },
+  { id: 'huggingface', name: 'Hugging Face', iconLabel: 'H' },
+  { id: 'runway', name: 'Runway', iconLabel: 'R' },
+  { id: 'xai', name: 'xAI', iconLabel: 'X' },
+  { id: 'synthesia', name: 'Synthesia', iconLabel: 'S' }
+];
+
+const queries = [
+  { query: 'أفضل مطعم في الرياض', lang: 'ar' },
+  { query: 'أفضل شركة تشطيب في الرياض', lang: 'ar' },
+  { query: 'Best ERP company in Saudi Arabia', lang: 'en' },
+  { query: 'أفضل مستشفى أطفال في جدة', lang: 'ar' },
+  { query: 'best marketing agency Dubai', lang: 'en' },
+  { query: 'شركة برمجيات موثوقة في الكويت', lang: 'ar' },
+  { query: 'Top real estate broker in Qatar', lang: 'en' },
+  { query: 'عيادة تجميل وليزر في البحرين', lang: 'ar' },
+  { query: 'Top logistics company in MENA', lang: 'en' },
+  { query: 'أفضل منصة تجارة إلكترونية', lang: 'ar' },
+  { query: 'AI automation for startups', lang: 'en' },
+  { query: 'Legal services in Muscat', lang: 'en' }
+];
+
+// Create two strictly separated arrays to prevent overlap
+// 1. Inner Ring: Platforms only (small width, fit well in tight radius)
+// 2. Outer Ring: Queries only (large width, need larger circumference)
+const innerItems = platforms.map(p => ({ type: 'platform', ...p }));
+const outerItems = queries.map(q => ({ type: 'query', ...q }));
+
+const TAU = 2 * Math.PI;
+
+// Map inner items (Platforms)
+const distributedInner = innerItems.map((item, index) => {
+  const orbitRadius = 220 + (index % 2 === 0 ? 10 : -10); // 210 to 230
+  const phase = (index / innerItems.length) * TAU;
+  
+  // All inner items must have EXACTLY the same speed to never collide with each other
+  const speed = 0.5;
+  const depth = 0.75;
+  const layer = 'near';
+
+  return { ...item, orbitRadius, phase, speed, depth, layer };
+});
+
+// Map outer items (Queries)
+const distributedOuter = outerItems.map((item, index) => {
+  const orbitRadius = 380 + (index % 2 === 0 ? 15 : -15); // 365 to 395
+  const phase = (index / outerItems.length) * TAU + (TAU / 24); // Offset phase
+  
+  // All outer items must have EXACTLY the same speed to never collide
+  const speed = -0.3; // Opposite direction, slower
+  const depth = 0.25;
+  const layer = 'far';
+
+  return { ...item, orbitRadius, phase, speed, depth, layer };
+});
+
+const distributedItems = [...distributedInner, ...distributedOuter];
+---
+
+<div class="ecosystem">
+  <!-- Background orbital rings -->
+  <svg class="ecosystem__rings" viewBox="-1000 -1000 2000 2000" aria-hidden="true" focusable="false">
+    <g class="ecosystem__rings-group" opacity="0.08">
+      {Array.from({ length: 6 }).map((_, i) => {
+        const r = 160 + i * 60; // 160, 220, 280, 340, 400, 460
+        const strokeWidth = Math.max(0.2, 0.4 - i * 0.04);
+        return <circle cx="0" cy="0" r={r} fill="none" stroke="currentColor" stroke-width={strokeWidth}></circle>;
+      })}
+    </g>
+  </svg>
+
+  <!-- ─── Floating Objects Container ─── -->
+  <div class="ecosystem__objects">
+    {distributedItems.map(item => (
+      item.type === 'platform' ? (
+        <PlatformToken
+          id={item.id}
+          name={item.name}
+          iconLabel={item.iconLabel}
+          orbitRadius={item.orbitRadius}
+          phase={item.phase}
+          speed={item.speed}
+          depth={item.depth}
+          layer={item.layer}
+        />
+      ) : (
+        <QueryPill
+          query={item.query}
+          lang={item.lang}
+          orbitRadius={item.orbitRadius}
+          phase={item.phase}
+          speed={item.speed}
+          depth={item.depth}
+          layer={item.layer}
+        />
+      )
+    ))}
+  </div>
+</div>
+
+<style>
+  .ecosystem {
+    position: absolute;
+    inset: 0;
+    color: var(--color-primary);
+    pointer-events: none;
+  }
+
+  .ecosystem__rings {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  .ecosystem__objects {
+    position: absolute;
+    inset: 0;
+  }
+</style>

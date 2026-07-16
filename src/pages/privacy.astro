@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="سياسة الخصوصية — مرزوق" description="سياسة الخصوصية لموقع مرزوق.">
+  <div class="page-content privacy-page">
+    <Header currentPath="/privacy" />
+
+    <main id="main-content">
+      <div class="content-container privacy-page__content">
+        <h1 class="privacy-page__title">سياسة الخصوصية</h1>
+        <p class="privacy-page__subtitle">آخر تحديث: يناير 2025</p>
+
+        <div class="privacy-page__body">
+          <section class="privacy-page__section">
+            <h2>البيانات التي نجمعها</h2>
+            <p>
+              نجمع فقط المعلومات التي تقدمها طوعًا عند التواصل معنا، مثل الاسم والبريد الإلكتروني
+              ومحتوى رسالتك. لا نستخدم أدوات تتبع أو تحليلات تجمع بيانات شخصية دون إذنك.
+            </p>
+          </section>
+
+          <section class="privacy-page__section">
+            <h2>كيف نستخدم البيانات</h2>
+            <p>
+              نستخدم بياناتك فقط للرد على استفساراتك وتقديم الخدمات التي طلبتها. لا نبيع بياناتك ولا
+              نشاركها مع أطراف ثالثة.
+            </p>
+          </section>
+
+          <section class="privacy-page__section">
+            <h2>التواصل معنا</h2>
+            <p>
+              إذا كان لديك أي أسئلة حول سياسة الخصوصية، يمكنك التواصل معنا عبر
+              <a href="/contact">صفحة التواصل</a>.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .privacy-page {
+    min-height: 100vh;
+  }
+
+  .privacy-page__content {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+
+  .privacy-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .privacy-page__subtitle {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .privacy-page__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .privacy-page__section h2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .privacy-page__section p {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .privacy-page__section a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .privacy-page__section a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+</style>

@@ -1,0 +1,119 @@
+---
+/**
+ * PlatformToken — represents one AI platform in the Ecosystem.
+ *
+ * Specification: ecosystem.specification.md — Platform Tokens
+ * Visual: Container → Platform Icon → Platform Label
+ */
+import PlatformIcon from './icons/PlatformIcon.astro';
+
+interface Props {
+  id: string;
+  name: string;
+  iconLabel?: string;
+  orbitRadius: number;
+  phase: number;
+  speed?: number;
+  depth?: number;
+  layer?: 'far' | 'mid' | 'near';
+}
+
+const { id, name, orbitRadius, phase, speed = 1, depth = 0.5, layer = 'mid' } = Astro.props;
+
+// Build data attributes for the JS orbital system
+const dataAttrs = {
+  'data-orbit-radius': orbitRadius,
+  'data-orbit-phase': phase,
+  'data-orbit-speed': speed,
+  'data-orbit-depth': depth,
+};
+---
+
+<div class={`platform-token platform-token--${layer}`} role="img" aria-label={name} {...dataAttrs}>
+  <span class="platform-token__icon" aria-hidden="true">
+    <PlatformIcon name={id} class="platform-token__svg" />
+  </span>
+  <span class="platform-token__label">{name}</span>
+</div>
+
+<style>
+  .platform-token {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: var(--color-glass);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-full);
+    cursor: default;
+    user-select: none;
+    will-change: transform, opacity;
+    transition:
+      opacity var(--duration-slow) var(--ease-smooth),
+      scale var(--duration-base) var(--ease-smooth);
+
+    /* Position via CSS custom properties — avoids layout on every RAF tick */
+    transform: translate(calc(var(--orbit-x, 0px) - 50%), calc(var(--orbit-y, 0px) - 50%));
+
+    /* Ambient state: reduced opacity */
+    opacity: 0.42;
+  }
+
+  .platform-token--far {
+    opacity: 0.25;
+  }
+
+  .platform-token--mid {
+    opacity: 0.42;
+  }
+
+  .platform-token--near {
+    opacity: 0.55;
+  }
+
+  /* Focus state (set by JS when Compass aligns) */
+  .platform-token.is-focused {
+    opacity: 1;
+    scale: 1.06;
+    transition:
+      opacity var(--duration-base) var(--ease-smooth),
+      scale var(--duration-base) var(--ease-smooth);
+  }
+
+  .platform-token__icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-primary);
+  }
+
+  .platform-token__svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .platform-token__label {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-medium);
+    color: var(--color-primary);
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .platform-token,
+    .platform-token.is-focused {
+      transition: none;
+      scale: 1;
+    }
+  }
+</style>

@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="الشروط والأحكام — مرزوق" description="الشروط والأحكام لموقع مرزوق وخدماته.">
+  <div class="page-content terms-page">
+    <Header currentPath="/terms" />
+
+    <main id="main-content">
+      <div class="content-container terms-page__content">
+        <h1 class="terms-page__title">الشروط والأحكام</h1>
+        <p class="terms-page__subtitle">آخر تحديث: يناير 2025</p>
+
+        <div class="terms-page__body">
+          <section class="terms-page__section">
+            <h2>استخدام الموقع</h2>
+            <p>
+              باستخدامك لهذا الموقع، توافق على هذه الشروط والأحكام. إذا لم توافق عليها، يُرجى التوقف
+              عن استخدام الموقع.
+            </p>
+          </section>
+
+          <section class="terms-page__section">
+            <h2>الملكية الفكرية</h2>
+            <p>
+              جميع المحتويات على هذا الموقع — بما في ذلك النصوص والصور والتصاميم — هي ملك لمرزوق
+              ومحمية بموجب قوانين الملكية الفكرية.
+            </p>
+          </section>
+
+          <section class="terms-page__section">
+            <h2>المسؤولية</h2>
+            <p>
+              نسعى دائمًا لتقديم معلومات دقيقة وحديثة، لكن لا نتحمل المسؤولية عن أي أخطاء أو
+              انقطاعات في الخدمة.
+            </p>
+          </section>
+
+          <section class="terms-page__section">
+            <h2>التواصل معنا</h2>
+            <p>
+              إذا كان لديك أي أسئلة حول هذه الشروط، يمكنك التواصل معنا عبر
+              <a href="/contact">صفحة التواصل</a>.
+            </p>
+          </section>
+        </div>
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .terms-page {
+    min-height: 100vh;
+  }
+
+  .terms-page__content {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+
+  .terms-page__title {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .terms-page__subtitle {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: var(--space-6);
+  }
+
+  .terms-page__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+  }
+
+  .terms-page__section h2 {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+  }
+
+  .terms-page__section p {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+  }
+
+  .terms-page__section a {
+    color: var(--color-primary);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .terms-page__section a:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+</style>

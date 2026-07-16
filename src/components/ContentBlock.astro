@@ -1,0 +1,98 @@
+---
+/**
+ * ContentBlock — the homepage content layer.
+ *
+ * Introduces Marzoq using minimal language: What → Why → Who → Action.
+ * Never dominates the visual experience; reading follows observation.
+ */
+interface Props {
+  headline: string;
+  subtext?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+import CtaButton from './CtaButton.astro';
+
+const { headline, subtext, ctaLabel, ctaHref = '/contact' } = Astro.props;
+---
+
+<div class="content-block">
+  <h1 class="content-block__headline text-balance">{headline}</h1>
+  {subtext && <p class="content-block__subtext text-balance">{subtext}</p>}
+  {
+    (ctaLabel || Astro.slots.has('actions')) && (
+      <div class="content-block__cta">
+        {Astro.slots.has('actions') ? (
+          <slot name="actions" />
+        ) : (
+          <CtaButton href={ctaHref} label={ctaLabel} />
+        )}
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .content-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    max-width: 420px;
+    text-align: start;
+    align-items: flex-start;
+  }
+
+  .content-block__headline {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+    color: var(--color-primary);
+  }
+
+  .content-block__subtext {
+    font-family: var(--font-sans);
+    font-size: calc(var(--text-base) * 1.3);
+    font-weight: var(--weight-regular);
+    line-height: var(--leading-relaxed);
+    color: var(--color-primary);
+    opacity: 0.75;
+  }
+
+  .content-block__cta {
+    padding-top: var(--space-2);
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  /* Tablet */
+  @media (max-width: 1199px) {
+    .content-block {
+      max-width: 380px;
+    }
+  }
+
+  /* Mobile */
+  @media (max-width: 767px) {
+    .content-block {
+      max-width: 100%;
+      text-align: start;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .content-block__headline {
+      margin: 0;
+    }
+    .content-block__subtext {
+      font-size: var(--text-base);
+      margin: 0;
+    }
+    .content-block__cta {
+      justify-content: flex-start;
+      padding-top: 0;
+      gap: 10px;
+    }
+  }
+</style>

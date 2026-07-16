@@ -1,0 +1,214 @@
+---
+/**
+ * Homepage — Marzoq
+ *
+ * The flagship experience. One viewport. Six coexisting systems.
+ * Single composition: Background → Ecosystem → Compass → Content → Header → Footer.
+ *
+ * Specification: homepage.specification.md
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Compass from '../components/Compass.astro';
+import Ecosystem from '../components/Ecosystem.astro';
+import ContentBlock from '../components/ContentBlock.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CtaButton from '../components/CtaButton.astro';
+---
+
+<BaseLayout
+  title="مرزوق — ساعد شركتك تكون الإجابة التي يقدمها الذكاء الاصطناعي"
+  description="مرزوق يساعد الشركات على أن تصبح أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي."
+>
+  <!--
+    Homepage Viewport Canvas
+    Everything fits within 100vw × 100dvh. No scrolling.
+  -->
+  <div class="homepage page-experience" id="homepage">
+    <!-- ─────────────────────────────────────
+         Layer 1 (back): Background
+         Environmental presence — grid + depth
+         ───────────────────────────────────── -->
+    <div class="layer-background" aria-hidden="true">
+      <div class="background__grid"></div>
+    </div>
+
+    <!-- ─────────────────────────────────────
+         Layer 2: Ecosystem
+         Floating AI platforms and user queries
+         ───────────────────────────────────── -->
+    <div class="layer-ecosystem">
+      <Ecosystem />
+    </div>
+
+    <!-- ─────────────────────────────────────
+         Layer 3: Compass
+         The visual origin — direction
+         ───────────────────────────────────── -->
+    <div class="layer-compass">
+      <Compass />
+    </div>
+
+    <!-- ─────────────────────────────────────
+         Layer 4: Content Layer
+         What → Why → Who → Action
+         ───────────────────────────────────── -->
+    <main class="layer-content" id="main-content">
+      <div class="homepage__content-position">
+        <ContentBlock
+          headline="ساعد شركتك تكون الإجابة التي يقدمها الذكاء الاصطناعي"
+          subtext="مرزوق يساعدك على أن تصبح أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي."
+        >
+          <div slot="actions" style="display: contents;">
+            <CtaButton href="/contact" label="تواصل معنا" variant="primary" />
+            <CtaButton href="/portfolio" label="شاهد أعمالنا" variant="glass" />
+          </div>
+        </ContentBlock>
+      </div>
+    </main>
+
+    <!-- ─────────────────────────────────────
+         Layer 5: Header
+         Orientation — Logo + Nav
+         ───────────────────────────────────── -->
+    <div class="layer-header">
+      <Header currentPath="/" />
+    </div>
+
+    <!-- ─────────────────────────────────────
+         Layer 6 (front): Footer
+         ───────────────────────────────────── -->
+    <div class="layer-footer">
+      <Footer />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  /* ─── Homepage specific layout ─── */
+
+  .homepage {
+    /* Transparent to inherit the global body background gradient */
+  }
+
+  /* Push visual layers down to avoid overlapping the header */
+
+  /* Background grid */
+  .background__grid {
+    display: none; /* Hidden as per request */
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--color-primary-10) 1px, transparent 1px),
+      linear-gradient(90deg, var(--color-primary-10) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 90%);
+  }
+
+  /* Content Layer — positioned to the side of the Compass */
+  .homepage__content-position {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    max-width: 500px; /* Increased max-width to accommodate larger text */
+  }
+
+  /* ─── Tablet ─── */
+  @media (min-width: 1200px) {
+    /* Shift center of gravity away from the text block to balance the layout */
+    :global(html[dir='rtl']) .layer-compass,
+    :global(html[dir='rtl']) .layer-ecosystem {
+      transform: translateX(-15vw);
+    }
+    :global(html[dir='ltr']) .layer-compass,
+    :global(html[dir='ltr']) .layer-ecosystem {
+      transform: translateX(15vw);
+    }
+  }
+
+  @media (max-width: 1199px) {
+    .homepage__content-position {
+      inset-inline-start: 0;
+      max-width: 340px;
+    }
+  }
+
+  /* ─── Mobile ─── */
+  @media (max-width: 767px) {
+    /*
+      On mobile: Content Block moves below the Compass.
+      Translate both Compass and Ecosystem UP to free up space.
+    */
+    :global(html[dir='rtl']) .layer-compass,
+    :global(html[dir='rtl']) .layer-ecosystem,
+    :global(html[dir='ltr']) .layer-compass,
+    :global(html[dir='ltr']) .layer-ecosystem {
+      transform: translateY(-10vh);
+    }
+
+    .homepage__content-position {
+      inset-inline-start: 0;
+      inset-inline-end: 0;
+      top: auto;
+      bottom: 60px;
+      transform: none;
+      max-width: none;
+    }
+  }
+</style>
+
+<!--
+  Homepage Interaction Script
+  Boots the Compass and Ecosystem animation systems.
+  Runs only when JavaScript is available; SVG and content remain without JS.
+-->
+<script>
+  import { initCompass } from '../scripts/compass.js';
+  import { initEcosystem } from '../scripts/ecosystem.js';
+  import { createPointerTracker } from '../scripts/motion/index.js';
+
+  // Wait for DOM ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const svgEl = document.querySelector('.compass__svg');
+    const needleEl = document.querySelector('.compass__needle');
+    const signalLine = document.querySelector('.compass__signal-line');
+    const signalTip = document.querySelector('.compass__signal-tip');
+    const signalRing = document.querySelector('.compass__signal-ring');
+    const ecosystemObjects = document.querySelector('.ecosystem__objects');
+
+    if (!svgEl || !needleEl || !ecosystemObjects) return;
+
+    const compassLayer = document.querySelector('.layer-compass');
+    // Single shared pointer tracker — both Compass and Ecosystem read from it
+    const pointer = createPointerTracker(compassLayer || document.documentElement);
+
+    let ecosystemInstance = null;
+
+    // Initialize Compass — pass pointer as getter so it reads current state each frame
+    const compass = initCompass({
+      svgEl,
+      needleEl,
+      signalLine,
+      signalTip,
+      signalRing,
+      getPointer: () => pointer,
+      getAmbientAngle: () => (ecosystemInstance ? ecosystemInstance.ambientAngle : null),
+    });
+
+    // Initialize Ecosystem with Compass direction feed and shared pointer
+    ecosystemInstance = initEcosystem({
+      containerEl: ecosystemObjects,
+      getAngle: () => compass.angle,
+      getPointer: () => ({ x: pointer.x, y: pointer.y }),
+    });
+
+    // Cleanup on page unload (important for Astro view transitions)
+    document.addEventListener('astro:before-swap', () => {
+      compass.destroy();
+      if (ecosystemInstance) ecosystemInstance.destroy();
+      pointer.destroy();
+    });
+  });
+</script>

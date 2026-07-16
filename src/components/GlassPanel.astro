@@ -1,0 +1,53 @@
+---
+/**
+ * GlassPanel — a glass surface for separating interface layers.
+ *
+ * Glass supports hierarchy. It does not create it.
+ * Keep blur subtle; never let it become the dominant visual element.
+ */
+interface Props {
+  class?: string;
+  padding?: 'sm' | 'md' | 'lg';
+  radius?: 'md' | 'lg' | 'xl';
+}
+
+const { class: extraClass = '', padding = 'md', radius = 'xl', ...rest } = Astro.props;
+---
+
+<div
+  class={`glass-panel glass-panel--p-${padding} glass-panel--r-${radius} ${extraClass}`}
+  {...rest}
+>
+  <slot />
+</div>
+
+<style>
+  .glass-panel {
+    background: var(--color-glass);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid var(--color-glass-border);
+  }
+
+  /* Padding variants */
+  .glass-panel--p-sm {
+    padding: var(--space-2);
+  }
+  .glass-panel--p-md {
+    padding: var(--space-3);
+  }
+  .glass-panel--p-lg {
+    padding: var(--space-4);
+  }
+
+  /* Radius variants */
+  .glass-panel--r-md {
+    border-radius: var(--radius-md);
+  }
+  .glass-panel--r-lg {
+    border-radius: var(--radius-lg);
+  }
+  .glass-panel--r-xl {
+    border-radius: var(--radius-xl);
+  }
+</style>

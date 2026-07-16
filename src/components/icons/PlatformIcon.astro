@@ -1,0 +1,103 @@
+---
+interface Props {
+  name: string;
+  class?: string;
+}
+
+const { name, class: className } = Astro.props;
+---
+
+{name === 'chatgpt' && (
+  <svg class={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M22.28 9.82a6 6 0 0 0-.52-4.91 6.05 6.05 0 0 0-6.51-2.9A6.07 6.07 0 0 0 5 4.18a6 6 0 0 0-4 2.9 6.05 6.05 0 0 0 .74 7.1 6 6 0 0 0 .51 4.91 6.05 6.05 0 0 0 6.52 2.9A6 6 0 0 0 13.26 24a6.06 6.06 0 0 0 5.77-4.21 6 6 0 0 0 4-2.9 6.06 6.06 0 0 0-.75-7.07zm-9.02 12.61a4.48 4.48 0 0 1-2.88-1.04l.14-.08 4.78-2.76a.79.79 0 0 0 .39-.68v-6.74l2.02 1.17a.07.07 0 0 1 .04.05v5.58a4.5 4.5 0 0 1-4.5 4.5zm-9.66-4.13a4.47 4.47 0 0 1-.53-3.01l.14.08 4.78 2.76a.77.77 0 0 0 .78 0l5.84-3.37v2.33a.08.08 0 0 1-.03.06L9.74 19.95a4.5 4.5 0 0 1-6.14-1.65zM2.34 7.9a4.49 4.49 0 0 1 2.37-1.97v6.74a.77.77 0 0 0 .39.68l5.81 3.35-2.02 1.17a.08.08 0 0 1-.07 0L4.01 15.1A4.5 4.5 0 0 1 2.34 7.9zm16.1 3.86L12.6 8.38V6.05a.08.08 0 0 1 .03-.06l4.83-2.79a4.5 4.5 0 0 1 6.68 4.66v5.58a.79.79 0 0 1-.39.68l-4.78 2.76-.14-.08v-5.05zM10.74 1.57a4.49 4.49 0 0 1 2.88 1.04l-.14.08-4.78 2.76a.79.79 0 0 0-.39.68v6.74l-2.02-1.17a.07.07 0 0 1-.04-.05V6.07a4.5 4.5 0 0 1 4.5-4.5zm9.66 4.13a4.47 4.47 0 0 1 .53 3.01l-.14-.09-4.78-2.76a.77.77 0 0 0-.78 0l-5.84 3.37V6.85a.08.08 0 0 1 .03-.06l4.83-2.79a4.5 4.5 0 0 1 6.14 1.65zM12 14.33l-3.03-1.75V9.09L12 7.34l3.03 1.75v3.49L12 14.33z"/>
+  </svg>
+)}
+
+{name === 'claude' && (
+  <svg class={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.43 19.57a8 8 0 1 1 2.35-8h-2.06a6 6 0 1 0-1.75 6H17.43zM12 2a10 10 0 1 1-10 10A10 10 0 0 1 12 2z"/>
+  </svg>
+)}
+
+{name === 'gemini' && (
+  <svg class={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z"/>
+  </svg>
+)}
+
+{name === 'perplexity' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <rect x="3" y="3" width="7" height="7" rx="1"/>
+    <rect x="14" y="3" width="7" height="7" rx="1"/>
+    <rect x="3" y="14" width="7" height="7" rx="1"/>
+    <rect x="14" y="14" width="7" height="7" rx="1"/>
+    <circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/>
+    <path d="M6.5 10v4M17.5 10v4M10 6.5h4M10 17.5h4" stroke-linecap="round"/>
+  </svg>
+)}
+
+{name === 'copilot' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2z"/>
+    <path d="M12 6v6l4 2"/>
+    <circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>
+  </svg>
+)}
+
+{name === 'meta-ai' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M6.5 16A4.5 4.5 0 0 1 6.5 7h.5a7 7 0 0 1 5 3l0 0a7 7 0 0 0 5 3h.5a4.5 4.5 0 0 0 0-9A4.5 4.5 0 0 0 13 8.5"/>
+    <path d="M6.5 7A4.5 4.5 0 0 0 6.5 16h.5a7 7 0 0 0 5-3l0 0a7 7 0 0 1 5-3h.5a4.5 4.5 0 0 1 0 9A4.5 4.5 0 0 1 13 15.5"/>
+  </svg>
+)}
+
+{name === 'midjourney' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+    <path d="M4 22h16M12 2L4 18h16L12 2z" stroke-linejoin="round"/>
+    <path d="M12 8v4" stroke-linecap="round"/>
+  </svg>
+)}
+
+{name === 'notion' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+    <path d="M9 16V8l6 8V8"/>
+  </svg>
+)}
+
+{name === 'jasper' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M9 4h6a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
+    <path d="M12 8v8"/>
+  </svg>
+)}
+
+{name === 'huggingface' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="10"/>
+    <path d="M8 14s1.5 2 4 2 4-2 4-2"/>
+    <line x1="9" y1="9" x2="9.01" y2="9"/>
+    <line x1="15" y1="9" x2="15.01" y2="9"/>
+  </svg>
+)}
+
+{name === 'runway' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <polygon points="12 2 2 22 22 22"/>
+    <polygon points="12 10 7 22 17 22"/>
+  </svg>
+)}
+
+{name === 'xai' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <line x1="4" y1="4" x2="20" y2="20"/>
+    <line x1="20" y1="4" x2="4" y2="20"/>
+  </svg>
+)}
+
+{name === 'synthesia' && (
+  <svg class={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/>
+    <path d="M12 4v4M12 16v4M4 12h4M16 12h4"/>
+  </svg>
+)}

@@ -1,0 +1,128 @@
+---
+/**
+ * Portfolio Listing — Marzoq Archive Page
+ *
+ * Demonstrates outcomes: challenge → solution → impact.
+ * Real work builds more trust than marketing claims.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Card from '../../components/Card.astro';
+import CtaButton from '../../components/CtaButton.astro';
+import Footer from '../../components/Footer.astro';
+import { getPortfolio } from '../../lib/wordpress.js';
+
+const items = await getPortfolio();
+---
+
+<BaseLayout
+  title="أعمالنا — مرزوق"
+  description="دراسات حالة من أعمال مرزوق — كيف ساعدنا شركات على أن تكون أكثر قابلية للاكتشاف من قِبَل الذكاء الاصطناعي."
+>
+  <div class="page-archive portfolio-listing">
+    <Header currentPath="/portfolio" />
+
+    <main id="main-content">
+      <div class="archive-container">
+        <div class="portfolio-listing__intro">
+          <h1 class="portfolio-listing__headline">أعمالنا</h1>
+          <p class="portfolio-listing__subtext">نتائج حقيقية لشركات حقيقية.</p>
+        </div>
+
+        {
+          items.length > 0 ? (
+            <div class="portfolio-listing__grid" role="list">
+              {items.map((item) => (
+                <div role="listitem">
+                  <Card
+                    title={item.title?.rendered ?? ''}
+                    description={
+                      (item.excerpt?.rendered
+                        ?.replace(/<[^>]+>/g, '')
+                        .trim()
+                        .slice(0, 140) ?? '') + '…'
+                    }
+                    href={`/portfolio/${item.slug}`}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div class="portfolio-listing__empty">
+              <p>أعمالنا قيد الإضافة. تواصل معنا للاستفسار.</p>
+              <CtaButton href="/contact" label="تواصل معنا" variant="primary" />
+            </div>
+          )
+        }
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .portfolio-listing {
+    min-height: 100vh;
+  }
+
+  .portfolio-listing__header {
+    border-bottom: 1px solid var(--color-glass-border);
+    background: var(--color-background-warm);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .portfolio-listing__header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+  }
+
+  .portfolio-listing__intro {
+    padding: var(--space-2) 0;
+  }
+
+  .portfolio-listing__headline {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .portfolio-listing__subtext {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+  }
+
+  .portfolio-listing__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+    padding-bottom: var(--space-12);
+  }
+
+  .portfolio-listing__empty {
+    padding: var(--space-8) 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+  }
+
+
+
+  @media (max-width: 767px) {
+    .portfolio-listing__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,109 @@
+---
+/**
+ * CtaButton — primary call-to-action button.
+ *
+ * Used for the primary conversion action (e.g., "Start a conversation").
+ * One primary CTA per page. Style remains consistent throughout.
+ */
+interface Props {
+  href?: string;
+  label: string;
+  variant?: 'primary' | 'ghost' | 'glass';
+  type?: 'button' | 'submit';
+  disabled?: boolean;
+}
+
+const { href, label, variant = 'primary', type = 'button', disabled = false } = Astro.props;
+---
+
+{
+  href ? (
+    <a href={href} class={`cta-button cta-button--${variant} focus-visible`} aria-label={label}>
+      <span class="cta-button__label">{label}</span>
+    </a>
+  ) : (
+    <button
+      type={type}
+      class={`cta-button cta-button--${variant} focus-visible`}
+      disabled={disabled}
+      aria-label={label}
+    >
+      <span class="cta-button__label">{label}</span>
+    </button>
+  )
+}
+
+<style>
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px var(--space-3);
+    min-block-size: 44px;
+    border-radius: var(--radius-full);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    text-decoration: none;
+    cursor: pointer;
+    transition:
+      opacity var(--duration-fast) var(--ease-smooth),
+      transform var(--duration-fast) var(--ease-smooth);
+    border: 2px solid transparent;
+    white-space: nowrap;
+  }
+
+  .cta-button--primary {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+  }
+
+  .cta-button--primary:hover {
+    opacity: 0.88;
+  }
+
+  .cta-button--ghost {
+    color: var(--color-primary);
+    border-color: var(--color-primary-40);
+  }
+
+  .cta-button--ghost:hover {
+    border-color: var(--color-primary);
+    opacity: 0.85;
+  }
+
+  .cta-button--glass {
+    background-color: var(--color-glass);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+  }
+
+  .cta-button--glass:hover {
+    background-color: var(--color-glass-border);
+    opacity: 0.9;
+  }
+
+  .cta-button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  .cta-button:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  .cta-button__label {
+    pointer-events: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cta-button {
+      transition: none;
+    }
+    .cta-button:active:not(:disabled) {
+      transform: none;
+    }
+  }
+</style>

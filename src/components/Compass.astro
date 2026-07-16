@@ -1,0 +1,262 @@
+---
+/**
+ * Compass — Marzoq Core Component
+ *
+ * The permanent visual symbol of Marzoq. An interactive guidance instrument.
+ * Three structural layers (Deep, Mid, Core) + Hub + Needle + Signal.
+ *
+ * Specification: compass.component.canon.md
+ */
+---
+
+<!--
+  Compass renders as a pure SVG instrument.
+  JavaScript manages interaction (Needle rotation, parallax, breathing).
+  Without JavaScript: SVG remains visible, Needle stays in neutral orientation.
+-->
+<div class="compass">
+  <div class="compass__stage">
+    <svg
+      class="compass__svg"
+      viewBox="-200 -200 400 400"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <!-- ═══════════════════════════════════════
+           Layer 01 — Deep Structure
+           Environmental depth, lowest opacity, slowest motion
+           ═══════════════════════════════════════ -->
+      <g class="compass__layer compass__layer--deep">
+        <!-- Outer boundary ring -->
+        <circle cx="0" cy="0" r="192" fill="none" stroke="currentColor" stroke-width="0.5"></circle>
+        <!-- Distant guide rings -->
+        <circle cx="0" cy="0" r="176" fill="none" stroke="currentColor" stroke-width="0.3"></circle>
+        <circle cx="0" cy="0" r="160" fill="none" stroke="currentColor" stroke-width="0.3"></circle>
+        <!-- Alignment axes -->
+        <line x1="-192" y1="0" x2="192" y2="0" stroke="currentColor" stroke-width="0.25"></line>
+        <line x1="0" y1="-192" x2="0" y2="192" stroke="currentColor" stroke-width="0.25"></line>
+        <!-- Cardinal tick marks -->
+        <line x1="0" y1="-192" x2="0" y2="-183" stroke="currentColor" stroke-width="1"></line>
+        <line x1="0" y1="183" x2="0" y2="192" stroke="currentColor" stroke-width="1"></line>
+        <line x1="-192" y1="0" x2="-183" y2="0" stroke="currentColor" stroke-width="1"></line>
+        <line x1="183" y1="0" x2="192" y2="0" stroke="currentColor" stroke-width="1"></line>
+        <!-- Intercardinal ticks -->
+        <line x1="128" y1="-128" x2="135" y2="-135" stroke="currentColor" stroke-width="0.5"></line>
+        <line x1="-128" y1="-128" x2="-135" y2="-135" stroke="currentColor" stroke-width="0.5"
+        ></line>
+        <line x1="128" y1="128" x2="135" y2="135" stroke="currentColor" stroke-width="0.5"></line>
+        <line x1="-128" y1="128" x2="-135" y2="135" stroke="currentColor" stroke-width="0.5"></line>
+      </g>
+
+      <!-- ═══════════════════════════════════════
+           Layer 02 — Middle Structure
+           Instrument body, navigation field
+           ═══════════════════════════════════════ -->
+      <g class="compass__layer compass__layer--mid">
+        <!-- Intermediate rings -->
+        <circle cx="0" cy="0" r="140" fill="none" stroke="currentColor" stroke-width="0.5"></circle>
+        <circle cx="0" cy="0" r="116" fill="none" stroke="currentColor" stroke-width="0.4"></circle>
+        <!-- Navigation field (glass boundary) -->
+        <circle
+          cx="0"
+          cy="0"
+          r="100"
+          fill="rgba(234,222,210,0.08)"
+          stroke="currentColor"
+          stroke-width="0.6"></circle>
+        <!-- Structural geometry — 8-point graduation marks -->
+        <g class="compass__graduation-marks">
+          <!-- Major marks at 0°, 45°, 90°, 135°, 180°, 225°, 270°, 315° -->
+          <line x1="0" y1="-100" x2="0" y2="-110" stroke="currentColor" stroke-width="1.2"></line>
+          <line x1="0" y1="100" x2="0" y2="110" stroke="currentColor" stroke-width="1.2"></line>
+          <line x1="-100" y1="0" x2="-110" y2="0" stroke="currentColor" stroke-width="1.2"></line>
+          <line x1="100" y1="0" x2="110" y2="0" stroke="currentColor" stroke-width="1.2"></line>
+          <!-- 45-degree marks -->
+          <line x1="70.7" y1="-70.7" x2="77.8" y2="-77.8" stroke="currentColor" stroke-width="0.8"
+          ></line>
+          <line x1="-70.7" y1="-70.7" x2="-77.8" y2="-77.8" stroke="currentColor" stroke-width="0.8"
+          ></line>
+          <line x1="70.7" y1="70.7" x2="77.8" y2="77.8" stroke="currentColor" stroke-width="0.8"
+          ></line>
+          <line x1="-70.7" y1="70.7" x2="-77.8" y2="77.8" stroke="currentColor" stroke-width="0.8"
+          ></line>
+        </g>
+      </g>
+
+      <!-- ═══════════════════════════════════════
+           Layer 03 — Core Guidance Layer
+           Hub + Needle + Signal
+           ═══════════════════════════════════════ -->
+      <g class="compass__layer compass__layer--core">
+        <!-- ─── Hub ─── (never moves, never rotates) -->
+        <g class="compass__hub">
+          <!-- Outer ring -->
+          <circle cx="0" cy="0" r="14" fill="none" stroke="currentColor" stroke-width="1.5"
+          ></circle>
+          <!-- Inner ring -->
+          <circle cx="0" cy="0" r="8" fill="none" stroke="currentColor" stroke-width="1"></circle>
+          <!-- Core point -->
+          <circle cx="0" cy="0" r="3" fill="currentColor"></circle>
+        </g>
+
+        <!-- ─── Needle Group ─── (rotates as one object) -->
+        <g class="compass__needle" transform="rotate(0)">
+          <!-- Bottom counterweight -->
+          <rect x="-2" y="16" width="4" height="28" rx="2" fill="currentColor" opacity="0.45"
+          ></rect>
+          <!-- Main shaft -->
+          <rect x="-1.5" y="-72" width="3" height="88" rx="1.5" fill="currentColor"></rect>
+          <!-- Guidance tip — tapered arrow head -->
+          <polygon points="0,-88 -4,-72 4,-72" fill="currentColor"></polygon>
+
+          <!-- ─── Signal Line ─── -->
+          <g class="compass__signal">
+            <!-- Signal shaft (extends beyond tip) -->
+            <line
+              class="compass__signal-line"
+              x1="0"
+              y1="-88"
+              x2="0"
+              y2="-110"
+              stroke="currentColor"
+              stroke-width="1"
+              stroke-linecap="round"></line>
+            <!-- Signal tip -->
+            <circle class="compass__signal-tip" cx="0" cy="-110" r="3" fill="currentColor"></circle>
+            <!-- Signal ring (passive, communicates precision) -->
+            <circle
+              class="compass__signal-ring"
+              cx="0"
+              cy="-110"
+              r="8"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="0.75"
+              opacity="0.5"></circle>
+          </g>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <!--
+    Keyboard navigation destinations.
+    Visually hidden; accessible to keyboard and screen reader users.
+    Navigation elements respond to Compass direction — the Compass does not contain them.
+  -->
+  <nav class="compass__nav-destinations" aria-label="وجهات التنقل — Navigation Destinations">
+    <a href="/" class="compass__dest focus-visible" data-angle="270">الرئيسية — Home</a>
+    <a href="/about" class="compass__dest focus-visible" data-angle="0">من نحن — About</a>
+    <a href="/services" class="compass__dest focus-visible" data-angle="90">خدماتنا — Services</a>
+    <a href="/contact" class="compass__dest focus-visible" data-angle="180">تواصل معنا — Contact</a>
+  </nav>
+</div>
+
+<style>
+  .compass {
+    position: relative;
+    width: var(--compass-size);
+    height: var(--compass-size);
+    flex-shrink: 0;
+  }
+
+  .compass__stage {
+    width: 100%;
+    height: 100%;
+  }
+
+  .compass__svg {
+    width: 100%;
+    height: 100%;
+    color: var(--color-primary);
+    will-change: transform;
+  }
+
+  /* Layer opacity hierarchy */
+  .compass__layer--deep {
+    opacity: 0.18;
+  }
+
+  .compass__layer--mid {
+    opacity: 0.45;
+  }
+
+  .compass__layer--core {
+    opacity: 1;
+  }
+
+  /* Hub */
+  .compass__hub {
+    /* Hub never moves — no will-change here */
+  }
+
+  /* Needle rotates as a unit */
+  .compass__needle {
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  /* Signal elements mutate SVG geometry attributes (y2, cy), not CSS transforms.
+     No will-change hint needed — they inherit the SVG's composited layer. */
+
+  /* Keyboard navigation destinations — visually hidden, focus-visible shows them */
+  .compass__nav-destinations {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
+    overflow: visible;
+    pointer-events: none;
+    z-index: var(--z-focus);
+  }
+
+  .compass__dest {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    pointer-events: none;
+    text-decoration: none;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-primary);
+  }
+
+  .compass__dest:focus-visible {
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: nowrap;
+    pointer-events: auto;
+    /* Show centered below compass hub */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-background-warm);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    border: 1.5px solid var(--color-primary-40);
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Breathing animation — idle state, extremely slow */
+  .compass__svg {
+    animation: breathe 6s var(--ease-smooth) infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .compass__svg {
+      animation: none;
+    }
+  }
+</style>

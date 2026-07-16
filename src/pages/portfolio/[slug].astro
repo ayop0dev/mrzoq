@@ -1,0 +1,151 @@
+---
+/**
+ * Portfolio Case Study — Marzoq Content Page
+ *
+ * Content Pages support vertical scrolling for long-form reading.
+ * Portfolio shows outcomes: challenge → solution → impact.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getPortfolioItemBySlug, extractSeo } from '../../lib/wordpress.js';
+
+export async function getStaticPaths() {
+  try {
+    const { getPortfolio } = await import('../../lib/wordpress.js');
+    const items = await getPortfolio();
+    return items.map((item) => ({ params: { slug: item.slug }, props: { item } }));
+  } catch {
+    return [];
+  }
+}
+
+const { slug } = Astro.params;
+const { item: propItem } = Astro.props;
+
+const item = propItem ?? (await getPortfolioItemBySlug(slug));
+
+if (!item) {
+  return Astro.redirect('/portfolio', 302);
+}
+
+const seo = extractSeo(item, item.title?.rendered || 'أعمالنا — مرزوق');
+---
+
+<BaseLayout
+  title={seo.title}
+  description={seo.description}
+  canonical={seo.canonical || undefined}
+  ogImage={seo.ogImage || undefined}
+>
+  <div class="page-content portfolio-case">
+    <Header currentPath="/portfolio" hideCta={true} />
+
+    <main id="main-content">
+      <article class="content-container portfolio-case__article">
+        <header class="portfolio-case__article-header">
+          <h1 class="portfolio-case__title" set:html={item.title?.rendered} />
+        </header>
+
+        <div class="portfolio-case__body prose" set:html={item.content?.rendered} />
+        
+        <div class="portfolio-case__back-wrapper">
+          <a href="/portfolio" class="portfolio-case__back focus-visible">العودة إلى الأعمال</a>
+        </div>
+      </article>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .portfolio-case {
+    background-color: transparent;
+  }
+
+  .portfolio-case__header {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-glass-border);
+    position: sticky;
+    top: 0;
+    background: var(--color-background-warm);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: var(--z-header);
+  }
+
+  .portfolio-case__article {
+    padding-top: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+
+  .portfolio-case__article-header {
+    margin-bottom: var(--space-6);
+  }
+
+  .portfolio-case__title {
+    font-family: var(--font-sans);
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-snug);
+    color: var(--color-primary);
+  }
+
+  .prose {
+    font-family: var(--font-text);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+    color: var(--color-primary);
+  }
+
+  .prose :global(h2) {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-2);
+  }
+
+  .prose :global(p) {
+    margin-bottom: var(--space-3);
+  }
+
+  .prose :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .prose :global(a:focus-visible) {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  .portfolio-case__back-wrapper {
+    margin-top: var(--space-8);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-glass-border);
+  }
+
+  .portfolio-case__back {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 44px;
+    transition: color var(--duration-fast) var(--ease-smooth);
+  }
+
+  .portfolio-case__back:hover {
+    color: var(--color-text-primary);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .portfolio-case__back {
+      transition: none;
+    }
+  }
+</style>

@@ -1,0 +1,82 @@
+/*
+  Global Animations — Marzoq
+  Approved keyframes for the Marzoq motion vocabulary.
+  Motion communicates meaning, never decoration.
+*/
+
+/* ─── Breathing (Compass idle existence) ─── */
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.008);
+    opacity: 0.96;
+  }
+}
+
+/* ─── Fade In (element entrance) ─── */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ─── Fade In Up (content entrance) ─── */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── Orbital Drift (Ecosystem objects) ─── */
+@keyframes orbital-drift {
+  0% {
+    transform: rotate(0deg) translateX(var(--orbit-radius, 160px)) rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg) translateX(var(--orbit-radius, 160px)) rotate(-360deg);
+  }
+}
+
+/* ─── Soft Rotation (structural rings) ─── */
+@keyframes soft-rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ─── Soft Counter-Rotation ─── */
+@keyframes soft-rotate-reverse {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+/* ─── Reduced Motion ─── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

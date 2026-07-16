@@ -1,0 +1,137 @@
+---
+/**
+ * Blog Listing - Marzoq Archive Page
+ *
+ * Lightweight, easy to scan. Directs visitors toward individual posts.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Card from '../../components/Card.astro';
+import Footer from '../../components/Footer.astro';
+import { getPosts } from '../../lib/wordpress.js';
+
+const posts = await getPosts(12);
+
+function formatDate(dateString) {
+  return new Date(dateString).toLocaleDateString('ar-SA', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
+function truncateExcerpt(excerpt) {
+  if (!excerpt) return '';
+  return excerpt.length > 120 ? `${excerpt.slice(0, 120)}...` : excerpt;
+}
+---
+
+<BaseLayout
+  title="المدونة - مرزوق"
+  description="مقالات ومحتوى تعليمي حول الذكاء الاصطناعي وكيف تبني الشركات حضورها الرقمي في عصر الذكاء الاصطناعي."
+>
+  <div class="page-archive blog-listing">
+    <Header currentPath="/blog" />
+
+    <main id="main-content">
+      <div class="archive-container">
+        <div class="blog-listing__intro">
+          <h1 class="blog-listing__headline">المدونة</h1>
+          <p class="blog-listing__subtext">
+            فهم الذكاء الاصطناعي وبناء الحضور الرقمي الذي يوصى به.
+          </p>
+        </div>
+
+        {
+          posts.length > 0 ? (
+            <div class="blog-listing__grid" role="list">
+              {posts.map((post) => (
+                <div role="listitem">
+                  <Card
+                    title={post.title}
+                    description={truncateExcerpt(post.excerpt)}
+                    href={`/blog/${post.slug}`}
+                    meta={formatDate(post.date)}
+                  />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div class="blog-listing__empty">
+              <p>المقالات قيد الإعداد. عد قريبا.</p>
+            </div>
+          )
+        }
+      </div>
+    </main>
+
+    <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .blog-listing {
+    min-height: 100vh;
+  }
+
+  .blog-listing__header {
+    border-bottom: 1px solid var(--color-glass-border);
+    background: var(--color-background-warm);
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .blog-listing__header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-2) 0;
+  }
+
+  .blog-listing__intro {
+    padding: var(--space-2) 0;
+  }
+
+  .blog-listing__headline {
+    font-family: var(--font-sans);
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .blog-listing__subtext {
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+  }
+
+  .blog-listing__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-2);
+    padding-bottom: var(--space-12);
+  }
+
+  .blog-listing__empty {
+    padding: var(--space-8) 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    color: var(--color-text-secondary);
+  }
+
+  @media (max-width: 1199px) {
+    .blog-listing__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .blog-listing__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

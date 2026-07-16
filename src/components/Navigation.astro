@@ -1,0 +1,107 @@
+---
+/**
+ * Navigation — site-wide primary navigation.
+ *
+ * The Compass communicates direction; Navigation provides the destinations.
+ * Navigation is always visible, never collapses, never becomes sticky.
+ * It is part of the viewport composition.
+ */
+interface Props {
+  currentPath?: string;
+  layout?: 'horizontal' | 'vertical';
+}
+
+const { currentPath = '/', layout = 'horizontal' } = Astro.props;
+
+const links = [
+  { href: '/about', label: 'من نحن', labelEn: 'About' },
+  { href: '/services', label: 'خدماتنا', labelEn: 'Services' },
+  // { href: '/portfolio', label: 'أعمالنا', labelEn: 'Portfolio' },
+  { href: '/blog', label: 'المدونة', labelEn: 'Blog' },
+  { href: '/contact', label: 'تواصل معنا', labelEn: 'Contact' },
+];
+---
+
+<nav class={`navigation navigation--${layout}`} aria-label="التنقل الرئيسي">
+  <ul class="navigation__list" role="list">
+    {
+      links.map(({ href, label }) => (
+        <li class="navigation__item">
+          <a
+            href={href}
+            class={`navigation__link focus-visible${currentPath === href ? ' navigation__link--active' : ''}`}
+            aria-current={currentPath === href ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .navigation__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    list-style: none;
+  }
+
+  /* Vertical layout for side panel */
+  .navigation--vertical .navigation__list {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+
+  .navigation--vertical .navigation__link {
+    font-size: var(--text-2xl);
+    padding: var(--space-1) 0;
+    font-weight: var(--weight-semibold);
+  }
+
+  .navigation__link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px var(--space-1);
+    min-block-size: 44px;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    border-radius: var(--radius-md);
+    transition: color var(--duration-fast) var(--ease-smooth), opacity var(--duration-fast) var(--ease-smooth);
+  }
+
+  .navigation__link:hover {
+    color: var(--color-text-primary);
+  }
+
+  .navigation__link--active {
+    color: var(--color-text-primary);
+    font-weight: var(--weight-semibold);
+  }
+
+  /* Desktop-only opacity effect */
+  @media (min-width: 768px) {
+    .navigation__link {
+      opacity: 0.5;
+    }
+    .navigation__link:hover,
+    .navigation__link:active,
+    .navigation__link:focus-visible {
+      opacity: 1;
+    }
+    .navigation__link--active {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .navigation__link {
+      transition: none;
+    }
+  }
+</style>

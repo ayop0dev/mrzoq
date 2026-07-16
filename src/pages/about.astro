@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CtaButton from '../components/CtaButton.astro';
+
+const currentYear = new Date().getFullYear();
+---
+
+<BaseLayout title="عن مرزوق | نحن شريكك التقني" description="تعرف على شركة مرزوق، شريكك التقني في عصر الذكاء الاصطناعي.">
+  <div class="page-wrapper">
+    <Header />
+    
+    <main class="about-page">
+    <div class="about-container">
+      
+      <!-- Right Side: Main Content (RTL -> Right is visually first) -->
+      <div class="about-main-content">
+        <h1 class="hero-headline">نحن شريكك التقني<br>في عصر الذكاء الاصطناعي.</h1>
+        <p class="hero-desc">
+          لا نبني مجرد مواقع، بل نؤسس حضوراً رقمياً يفرض الثقة ويجعل أنظمة الذكاء الاصطناعي توصي بك كخيار أول في مجالك.
+        </p>
+
+        <div class="core-values-section">
+          <h2 class="section-title">قيم العمل الأساسية</h2>
+          <div class="values-grid">
+            <div class="value-item">
+              <h3 class="title-with-icon">
+                <svg class="title-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                الشفافية المطلقة
+              </h3>
+              <p>وضوح تام ومكاشفة كاملة في كل خطوة.</p>
+            </div>
+            <div class="value-item">
+              <h3 class="title-with-icon">
+                <svg class="title-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                الجودة المستدامة
+              </h3>
+              <p>نبني تقنيات تصمد أمام التطورات السريعة.</p>
+            </div>
+            <div class="value-item">
+              <h3 class="title-with-icon">
+                <svg class="title-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                الابتكار الاستباقي
+              </h3>
+              <p>نضعك دائماً بخطوة واحدة قبل منافسيك.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Left Side: Sidebar Cards (RTL -> Left is visually second) -->
+      <aside class="about-sidebar">
+        
+        <div class="info-card">
+          <h2 class="card-title title-with-icon">
+            <svg class="title-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+            رؤيتنا
+          </h2>
+          <p class="card-desc">أن نكون المعيار الأول للشركات التي تسعى للريادة في عالم تقوده خوارزميات الفهم المتقدمة، وبناء ثقة أساسها الوضوح.</p>
+        </div>
+
+        <div class="info-card">
+          <h2 class="card-title title-with-icon">
+            <svg class="title-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+            مهمتنا
+          </h2>
+          <p class="card-desc">تمكين العلامات التجارية من التحدث بلغة يفهمها الإنسان والآلة بدقة متناهية، لبناء مرجعية رقمية موثوقة ومستدامة.</p>
+        </div>
+
+        <div class="cta-card">
+          <h2 class="card-title">كيف نساعدك في {currentYear}؟</h2>
+          <p class="card-desc">نضع شركتك بقوة على رادار أنظمة البحث الذكية لتكون الخيار الأول.</p>
+          <div class="cta-wrap">
+            <CtaButton href="/contact" label="ابدأ المحادثة الآن" variant="primary" />
+          </div>
+        </div>
+
+      </aside>
+
+    </div>
+  </main>
+  
+  <Footer />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  .about-page {
+    flex-grow: 1;
+    display: flex;
+    align-items: center; /* Centers everything vertically on the screen */
+    padding-top: var(--space-2);
+    padding-bottom: var(--space-2);
+    padding-inline: 0; /* Remove left/right padding */
+  }
+
+  @media (max-width: 1199px) {
+    .about-page {
+      padding-inline: var(--space-6);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .about-page {
+      padding-inline: var(--space-4);
+    }
+  }
+
+  /* --- LAYOUT GRID --- */
+  /* Main wrapper ensuring alignment with Header and Footer */
+  .about-container {
+    width: 100%;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0; /* No left/right padding to touch edges */
+    display: grid;
+    grid-template-columns: 55fr 45fr; /* 55% right content, 45% left sidebar for perfect balance */
+    gap: 80px; /* Generous space between columns */
+    align-items: center; /* Centers left and right columns relative to each other */
+  }
+
+  /* --- MAIN CONTENT (RIGHT IN RTL) --- */
+  .eyebrow {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: var(--space-2);
+    opacity: 0.9;
+  }
+
+  .hero-headline {
+    font-size: clamp(2rem, 3.5vw, 3.5rem);
+    font-weight: var(--weight-black);
+    color: var(--color-primary);
+    line-height: 1.1;
+    margin-bottom: var(--space-5);
+    letter-spacing: -0.02em;
+  }
+
+  .hero-desc {
+    font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+    line-height: 1.8;
+    color: var(--color-text-secondary);
+    max-width: 90%;
+    margin-top: 24px;
+    margin-bottom: 40px;
+  }
+
+  .core-values-section {
+    margin-top: 40px; /* Separation from hero */
+  }
+
+  .section-title {
+    font-size: clamp(1.8rem, 2.5vw, 2.2rem);
+    font-weight: var(--weight-black);
+    color: var(--color-primary);
+    margin-bottom: var(--space-6);
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  .value-item {
+    position: relative;
+  }
+
+  .value-item h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.15rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: 8px;
+  }
+
+  .value-item p {
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--color-text-secondary);
+  }
+
+
+  .title-icon {
+    color: var(--color-primary); /* Using the brand color */
+    flex-shrink: 0;
+  }
+
+  /* --- SIDEBAR (LEFT IN RTL) --- */
+  .about-sidebar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 30px; /* Controlled, exact gap between the 3 elements */
+  }
+
+  .info-card, .cta-card {
+    padding: 0; /* Removed padding so they cluster perfectly */
+  }
+
+  .card-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.4rem;
+    font-weight: var(--weight-bold);
+    color: var(--color-primary);
+    margin-bottom: 12px;
+  }
+
+  .card-desc {
+    font-size: 1.05rem;
+    line-height: 1.7;
+    color: var(--color-text-secondary);
+  }
+
+  .cta-wrap {
+    margin-top: 24px;
+  }
+
+  /* --- RESPONSIVE --- */
+  @media (max-width: 1024px) {
+    .about-container {
+      grid-template-columns: 1fr; /* Stack */
+      gap: var(--space-10);
+    }
+    .hero-desc {
+      max-width: 100%;
+    }
+    .about-sidebar {
+      padding-top: 0;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    .cta-card {
+      grid-column: span 2;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .about-sidebar {
+      grid-template-columns: 1fr;
+    }
+    .cta-card {
+      grid-column: span 1;
+    }
+    .values-grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-6);
+    }
+  }
+</style>

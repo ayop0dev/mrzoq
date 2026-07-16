@@ -1,0 +1,114 @@
+---
+/**
+ * QueryPill — represents one real user question in the Ecosystem.
+ *
+ * Specification: ecosystem.specification.md — Query Pills
+ * Visual: pill container with query text
+ *
+ * Queries must always feel like genuine human questions.
+ * Marketing slogans are forbidden.
+ */
+interface Props {
+  query: string;
+  lang?: 'ar' | 'en';
+  orbitRadius: number;
+  phase: number;
+  speed?: number;
+  depth?: number;
+  layer?: 'far' | 'mid' | 'near';
+}
+
+const {
+  query,
+  lang = 'ar',
+  orbitRadius,
+  phase,
+  speed = 1.1,
+  depth = 0.7,
+  layer = 'near',
+} = Astro.props;
+
+const dataAttrs = {
+  'data-orbit-radius': orbitRadius,
+  'data-orbit-phase': phase,
+  'data-orbit-speed': speed,
+  'data-orbit-depth': depth,
+};
+---
+
+<div
+  class={`query-pill query-pill--${layer}`}
+  role="img"
+  aria-label={query}
+  lang={lang}
+  dir={lang === 'ar' ? 'rtl' : 'ltr'}
+  {...dataAttrs}
+>
+  <span class="query-pill__text">{query}</span>
+</div>
+
+<style>
+  .query-pill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 14px;
+    background: var(--color-glass);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--color-glass-border);
+    border-radius: var(--radius-full);
+    cursor: default;
+    user-select: none;
+    will-change: transform, opacity;
+    transition:
+      opacity var(--duration-slow) var(--ease-smooth),
+      scale var(--duration-base) var(--ease-smooth);
+
+    /* Position via CSS custom properties — avoids layout on every RAF tick */
+    transform: translate(calc(var(--orbit-x, 0px) - 50%), calc(var(--orbit-y, 0px) - 50%));
+
+    /* Ambient state */
+    opacity: 0.45;
+  }
+
+  .query-pill--far {
+    opacity: 0.22;
+  }
+
+  .query-pill--mid {
+    opacity: 0.38;
+  }
+
+  .query-pill--near {
+    opacity: 0.5;
+  }
+
+  /* Focus state */
+  .query-pill.is-focused {
+    opacity: 1;
+    scale: 1.04;
+    transition:
+      opacity var(--duration-base) var(--ease-smooth),
+      scale var(--duration-base) var(--ease-smooth);
+  }
+
+  .query-pill__text {
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: var(--weight-regular);
+    color: var(--color-primary);
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .query-pill,
+    .query-pill.is-focused {
+      transition: none;
+      scale: 1;
+    }
+  }
+</style>

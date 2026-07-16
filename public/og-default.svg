@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#EADED2"/>
+
+  <!-- Subtle grid -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(6,88,48,0.08)" stroke-width="0.5"/>
+    </pattern>
+    <radialGradient id="fade" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#EADED2" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#EADED2" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="630" fill="url(#fade)"/>
+
+  <!-- Compass rings (decorative, centered right) -->
+  <g transform="translate(860, 315)" opacity="0.15" stroke="#065830" fill="none">
+    <circle r="220" stroke-width="0.5"/>
+    <circle r="190" stroke-width="0.4"/>
+    <circle r="155" stroke-width="0.3"/>
+    <circle r="120" stroke-width="0.5"/>
+    <circle r="80"  stroke-width="0.6"/>
+    <line x1="0" y1="-220" x2="0" y2="220" stroke-width="0.25"/>
+    <line x1="-220" y1="0" x2="220" y2="0" stroke-width="0.25"/>
+  </g>
+
+  <!-- Compass needle (pointing up-right) -->
+  <g transform="translate(860, 315) rotate(-35)" opacity="0.6" fill="#065830">
+    <rect x="-1.5" y="-90" width="3" height="106" rx="1.5"/>
+    <polygon points="0,-106 -5,-90 5,-90"/>
+    <circle cx="0" cy="0" r="10" fill="none" stroke="#065830" stroke-width="1.5"/>
+    <circle cx="0" cy="0" r="4"/>
+  </g>
+
+  <!-- Logo / Brand mark -->
+  <text
+    x="120"
+    y="220"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="72"
+    font-weight="700"
+    fill="#065830"
+    direction="rtl"
+    text-anchor="start"
+  >مرزوق</text>
+
+  <text
+    x="120"
+    y="270"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="28"
+    font-weight="400"
+    fill="#286848"
+    letter-spacing="6"
+  >MARZOQ</text>
+
+  <!-- Tagline -->
+  <text
+    x="120"
+    y="370"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="36"
+    font-weight="600"
+    fill="#065830"
+    direction="rtl"
+    text-anchor="start"
+  >ساعد شركتك تكون الإجابة</text>
+
+  <text
+    x="120"
+    y="420"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="36"
+    font-weight="600"
+    fill="#065830"
+    direction="rtl"
+    text-anchor="start"
+  >التي يقدمها الذكاء الاصطناعي</text>
+
+  <!-- Domain -->
+  <text
+    x="120"
+    y="510"
+    font-family="system-ui, -apple-system, sans-serif"
+    font-size="22"
+    font-weight="400"
+    fill="#286848"
+  >mrzoq.com</text>
+</svg>

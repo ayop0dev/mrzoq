@@ -1,0 +1,43 @@
+---
+/**
+ * Logo — the Marzoq wordmark.
+ *
+ * Simple, minimal. The Compass is the primary visual symbol;
+ * the Logo provides brand identification.
+ */
+interface Props {
+  href?: string;
+}
+const { href = '/' } = Astro.props;
+---
+
+<a href={href} class="logo focus-visible" aria-label="مرزوق — الرئيسية">
+  <span class="logo__text" aria-hidden="true">مرزوق</span>
+  <span class="logo__text-en" aria-hidden="true">Marzoq</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--color-primary);
+  }
+
+  .logo__text {
+    font-family: var(--font-sans);
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+
+  .logo__text-en {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    opacity: 0.5;
+    letter-spacing: 0.04em;
+  }
+</style>
