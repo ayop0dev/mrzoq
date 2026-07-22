@@ -145,18 +145,35 @@ import CtaButton from '../components/CtaButton.astro';
     :global(html[dir='rtl']) .layer-ecosystem,
     :global(html[dir='ltr']) .layer-compass,
     :global(html[dir='ltr']) .layer-ecosystem {
-      transform: translateY(-11vh);
+      transform: translateY(calc(-11vh - 70px));
     }
 
     .homepage__content-position {
       inset-inline-start: 0;
       inset-inline-end: 0;
       top: auto;
-      bottom: 132px;
+      bottom: 156px;
       transform: none;
       max-width: none;
       padding: 10px;
       box-sizing: border-box;
+    }
+
+    :global(.layer-footer) {
+      bottom: 24px;
+    }
+  }
+
+  @media (max-width: 767px) and (max-height: 700px) {
+    :global(html[dir='rtl']) .layer-compass,
+    :global(html[dir='rtl']) .layer-ecosystem,
+    :global(html[dir='ltr']) .layer-compass,
+    :global(html[dir='ltr']) .layer-ecosystem {
+      transform: translateY(calc(-11vh - 120px));
+    }
+
+    .homepage__content-position {
+      bottom: 116px;
     }
   }
 </style>
