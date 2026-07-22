@@ -22,6 +22,7 @@ const { id, name, orbitRadius, phase, speed = 1, depth = 0.5, layer = 'mid' } = 
 
 // Build data attributes for the JS orbital system
 const dataAttrs = {
+  'data-orbit-kind': 'platform',
   'data-orbit-radius': orbitRadius,
   'data-orbit-phase': phase,
   'data-orbit-speed': speed,
@@ -56,6 +57,7 @@ const dataAttrs = {
     transition:
       opacity var(--duration-slow) var(--ease-smooth),
       scale var(--duration-base) var(--ease-smooth);
+    scale: var(--platform-token-scale, 1);
 
     /* Position via CSS custom properties — avoids layout on every RAF tick */
     transform: translate(calc(var(--orbit-x, 0px) - 50%), calc(var(--orbit-y, 0px) - 50%));
@@ -79,7 +81,7 @@ const dataAttrs = {
   /* Focus state (set by JS when Compass aligns) */
   .platform-token.is-focused {
     opacity: 1;
-    scale: 1.06;
+    scale: calc(var(--platform-token-scale, 1) * 1.06);
     transition:
       opacity var(--duration-base) var(--ease-smooth),
       scale var(--duration-base) var(--ease-smooth);
@@ -113,7 +115,13 @@ const dataAttrs = {
     .platform-token,
     .platform-token.is-focused {
       transition: none;
-      scale: 1;
+      scale: var(--platform-token-scale, 1);
+    }
+  }
+
+  @media (max-width: 767px) {
+    .platform-token {
+      --platform-token-scale: 0.8;
     }
   }
 </style>

@@ -37,6 +37,8 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
   let centerX = window.innerWidth / 2;
   let centerY = window.innerHeight / 2;
   let scaleFactor = getScaleFactor(window.innerWidth);
+  let platformOrbitScale = window.innerWidth < 768 ? 0.8 : 1;
+  let platformOrbitOffsetY = window.innerWidth < 768 ? -32 : 0;
 
   // ── Build orbital descriptors from DOM data attributes ──
   const objectEls = Array.from(containerEl.querySelectorAll('[data-orbit-radius]'));
@@ -51,6 +53,7 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
       el,
       orbital: createOrbital({ radius, phase, speed, depth }),
       depth,
+      isPlatform: el.dataset.orbitKind === 'platform',
       isFocused: false,
     };
   });
@@ -72,24 +75,27 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
       currentAmbientAngle = orbitals[ambientIndex].orbital.angle(time);
     }
 
-    orbitals.forEach(({ el, orbital, depth }) => {
+    orbitals.forEach(({ el, orbital, depth, isPlatform }) => {
+      const platformScale = isPlatform ? platformOrbitScale : 1;
+      const platformOffsetY = isPlatform ? platformOrbitOffsetY : 0;
+
       if (reduced) {
         // Static position via CSS custom properties — no drift, no parallax
-        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0)}px`);
-        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0)}px`);
+        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0) * platformScale}px`);
+        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0) * platformScale + platformOffsetY}px`);
         return;
       }
 
       // Orbital position (scaled responsively)
-      const ox = orbital.x(time) * scaleFactor;
-      const oy = orbital.y(time) * scaleFactor;
+      const ox = orbital.x(time) * scaleFactor * platformScale;
+      const oy = orbital.y(time) * scaleFactor * platformScale;
 
       // Parallax offset
       const { dx, dy } = parallaxOffset(pointer.x, pointer.y, depth, 20);
 
       // Use CSS custom properties → transform: translate() path (no layout, compositor-friendly)
       el.style.setProperty('--orbit-x', `${centerX + ox + dx}px`);
-      el.style.setProperty('--orbit-y', `${centerY + oy + dy}px`);
+      el.style.setProperty('--orbit-y', `${centerY + oy + dy + platformOffsetY}px`);
 
       // Focus detection via Compass alignment
       if (needleAngle !== null) {
@@ -109,6 +115,8 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
     centerX = window.innerWidth / 2;
     centerY = window.innerHeight / 2;
     scaleFactor = getScaleFactor(window.innerWidth);
+    platformOrbitScale = window.innerWidth < 768 ? 0.8 : 1;
+    platformOrbitOffsetY = window.innerWidth < 768 ? -32 : 0;
   }
   window.addEventListener('resize', onResize, { passive: true });
 
@@ -116,10 +124,12 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
   const unsubMotion = onReducedMotionChange((isReduced) => {
     reduced = isReduced;
     if (isReduced) {
-      orbitals.forEach(({ el, orbital }) => {
+      orbitals.forEach(({ el, orbital, isPlatform }) => {
+        const platformScale = isPlatform ? platformOrbitScale : 1;
+        const platformOffsetY = isPlatform ? platformOrbitOffsetY : 0;
         el.classList.remove('is-focused');
-        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0)}px`);
-        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0)}px`);
+        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0) * platformScale}px`);
+        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0) * platformScale + platformOffsetY}px`);
       });
     }
   });
