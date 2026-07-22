@@ -38,7 +38,9 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
   let centerY = window.innerHeight / 2;
   let scaleFactor = getScaleFactor(window.innerWidth);
   let platformOrbitScale = window.innerWidth < 768 ? 0.8 : 1;
-  let platformOrbitOffsetY = window.innerWidth < 768 ? -32 : 0;
+  const getPlatformOrbitOffsetY = () =>
+    window.innerWidth < 768 && window.innerHeight <= 700 ? 64 : 0;
+  let platformOrbitOffsetY = getPlatformOrbitOffsetY();
 
   // ── Build orbital descriptors from DOM data attributes ──
   const objectEls = Array.from(containerEl.querySelectorAll('[data-orbit-radius]'));
@@ -48,26 +50,49 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
     const phase = parseFloat(el.dataset.orbitPhase);
     const speed = parseFloat(el.dataset.orbitSpeed);
     const depth = parseFloat(el.dataset.orbitDepth);
+    const mobileRadius = parseFloat(el.dataset.mobileOrbitRadius);
+    const mobilePhase = parseFloat(el.dataset.mobileOrbitPhase);
 
     return {
       el,
       orbital: createOrbital({ radius, phase, speed, depth }),
+      mobileOrbital: createOrbital({
+        radius: Number.isFinite(mobileRadius) ? mobileRadius : radius,
+        phase: Number.isFinite(mobilePhase) ? mobilePhase : phase,
+        speed,
+        depth,
+      }),
       depth,
       isPlatform: el.dataset.orbitKind === 'platform',
       isFocused: false,
     };
   });
+  const platformOrbitals = orbitals.filter(({ isPlatform }) => isPlatform);
 
   let ambientIndex = 0;
   let lastAmbientSwitch = 0;
   let currentAmbientAngle = -Math.PI / 2;
+  const mobileGuidanceOrder = [0, 7, 3, 10, 5, 1, 8, 4, 11, 6, 2, 9];
+  let mobileGuidanceIndex = 0;
 
   // ── Animation loop ──
   const loop = createAnimationLoop((time) => {
     const pointer = getPointer ? getPointer() : { x: 0, y: 0 };
     const needleAngle = getAngle ? getAngle() : null;
 
-    if (orbitals.length > 0) {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile && platformOrbitals.length > 0) {
+      if (time - lastAmbientSwitch > 6000) {
+        mobileGuidanceIndex = (mobileGuidanceIndex + 1) % mobileGuidanceOrder.length;
+        lastAmbientSwitch = time;
+      }
+
+      const targetIndex = mobileGuidanceOrder[mobileGuidanceIndex] % platformOrbitals.length;
+      const target = platformOrbitals[targetIndex].mobileOrbital;
+      const targetX = target.x(time) * scaleFactor * platformOrbitScale;
+      const targetY = target.y(time) * scaleFactor * platformOrbitScale + platformOrbitOffsetY;
+      currentAmbientAngle = Math.atan2(targetY, targetX);
+    } else if (orbitals.length > 0) {
       if (time - lastAmbientSwitch > 4000) {
         ambientIndex = (ambientIndex + 1) % orbitals.length;
         lastAmbientSwitch = time;
@@ -75,20 +100,28 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
       currentAmbientAngle = orbitals[ambientIndex].orbital.angle(time);
     }
 
-    orbitals.forEach(({ el, orbital, depth, isPlatform }) => {
+    orbitals.forEach(({ el, orbital, mobileOrbital, depth, isPlatform }) => {
+      const activeOrbital = isMobile && isPlatform ? mobileOrbital : orbital;
       const platformScale = isPlatform ? platformOrbitScale : 1;
       const platformOffsetY = isPlatform ? platformOrbitOffsetY : 0;
 
       if (reduced) {
         // Static position via CSS custom properties — no drift, no parallax
-        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0) * platformScale}px`);
-        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0) * platformScale + platformOffsetY}px`);
+        const responsiveScale = isMobile && isPlatform ? scaleFactor : 1;
+        el.style.setProperty(
+          '--orbit-x',
+          `${centerX + activeOrbital.x(0) * platformScale * responsiveScale}px`,
+        );
+        el.style.setProperty(
+          '--orbit-y',
+          `${centerY + activeOrbital.y(0) * platformScale * responsiveScale + platformOffsetY}px`,
+        );
         return;
       }
 
       // Orbital position (scaled responsively)
-      const ox = orbital.x(time) * scaleFactor * platformScale;
-      const oy = orbital.y(time) * scaleFactor * platformScale;
+      const ox = activeOrbital.x(time) * scaleFactor * platformScale;
+      const oy = activeOrbital.y(time) * scaleFactor * platformScale;
 
       // Parallax offset
       const { dx, dy } = parallaxOffset(pointer.x, pointer.y, depth, 20);
@@ -99,7 +132,10 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
 
       // Focus detection via Compass alignment
       if (needleAngle !== null) {
-        const objectAngle = orbital.angle(time);
+        const objectAngle =
+          isMobile && isPlatform
+            ? Math.atan2(oy + platformOrbitOffsetY, ox)
+            : activeOrbital.angle(time);
         const focused = isAligned(needleAngle, objectAngle, 0.22);
 
         if (focused && !el.classList.contains('is-focused')) {
@@ -116,7 +152,7 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
     centerY = window.innerHeight / 2;
     scaleFactor = getScaleFactor(window.innerWidth);
     platformOrbitScale = window.innerWidth < 768 ? 0.8 : 1;
-    platformOrbitOffsetY = window.innerWidth < 768 ? -32 : 0;
+    platformOrbitOffsetY = getPlatformOrbitOffsetY();
   }
   window.addEventListener('resize', onResize, { passive: true });
 
@@ -124,12 +160,21 @@ export function initEcosystem({ containerEl, getAngle, getPointer }) {
   const unsubMotion = onReducedMotionChange((isReduced) => {
     reduced = isReduced;
     if (isReduced) {
-      orbitals.forEach(({ el, orbital, isPlatform }) => {
+      orbitals.forEach(({ el, orbital, mobileOrbital, isPlatform }) => {
+        const isMobile = window.innerWidth < 768;
+        const activeOrbital = isMobile && isPlatform ? mobileOrbital : orbital;
         const platformScale = isPlatform ? platformOrbitScale : 1;
         const platformOffsetY = isPlatform ? platformOrbitOffsetY : 0;
+        const responsiveScale = isMobile && isPlatform ? scaleFactor : 1;
         el.classList.remove('is-focused');
-        el.style.setProperty('--orbit-x', `${centerX + orbital.x(0) * platformScale}px`);
-        el.style.setProperty('--orbit-y', `${centerY + orbital.y(0) * platformScale + platformOffsetY}px`);
+        el.style.setProperty(
+          '--orbit-x',
+          `${centerX + activeOrbital.x(0) * platformScale * responsiveScale}px`,
+        );
+        el.style.setProperty(
+          '--orbit-y',
+          `${centerY + activeOrbital.y(0) * platformScale * responsiveScale + platformOffsetY}px`,
+        );
       });
     }
   });

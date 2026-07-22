@@ -12,19 +12,22 @@
 import PlatformToken from './PlatformToken.astro';
 import QueryPill from './QueryPill.astro';
 
+const toRadians = (degrees) => (degrees * Math.PI) / 180;
+
+// Hand-tuned mobile positions keep label widths balanced around the Compass.
 const platforms = [
-  { id: 'chatgpt', name: 'ChatGPT', iconLabel: 'G' },
-  { id: 'claude', name: 'Claude', iconLabel: 'C' },
-  { id: 'gemini', name: 'Gemini', iconLabel: 'G' },
-  { id: 'copilot', name: 'Copilot', iconLabel: 'Co' },
-  { id: 'perplexity', name: 'Perplexity', iconLabel: 'P' },
-  { id: 'midjourney', name: 'Midjourney', iconLabel: 'M' },
-  { id: 'notion', name: 'Notion AI', iconLabel: 'N' },
-  { id: 'jasper', name: 'Jasper', iconLabel: 'J' },
-  { id: 'huggingface', name: 'Hugging Face', iconLabel: 'H' },
-  { id: 'runway', name: 'Runway', iconLabel: 'R' },
-  { id: 'xai', name: 'xAI', iconLabel: 'X' },
-  { id: 'synthesia', name: 'Synthesia', iconLabel: 'S' }
+  { id: 'chatgpt', name: 'ChatGPT', iconLabel: 'G', mobileRadius: 380, mobilePhase: toRadians(-94) },
+  { id: 'claude', name: 'Claude', iconLabel: 'C', mobileRadius: 320, mobilePhase: toRadians(-62) },
+  { id: 'gemini', name: 'Gemini', iconLabel: 'G', mobileRadius: 380, mobilePhase: toRadians(-25) },
+  { id: 'copilot', name: 'Copilot', iconLabel: 'Co', mobileRadius: 300, mobilePhase: toRadians(3) },
+  { id: 'perplexity', name: 'Perplexity', iconLabel: 'P', mobileRadius: 340, mobilePhase: toRadians(35) },
+  { id: 'midjourney', name: 'Midjourney', iconLabel: 'M', mobileRadius: 320, mobilePhase: toRadians(67) },
+  { id: 'notion', name: 'Notion AI', iconLabel: 'N', mobileRadius: 380, mobilePhase: toRadians(98) },
+  { id: 'jasper', name: 'Jasper', iconLabel: 'J', mobileRadius: 300, mobilePhase: toRadians(125) },
+  { id: 'huggingface', name: 'Hugging Face', iconLabel: 'H', mobileRadius: 340, mobilePhase: toRadians(154) },
+  { id: 'runway', name: 'Runway', iconLabel: 'R', mobileRadius: 300, mobilePhase: toRadians(184) },
+  { id: 'xai', name: 'xAI', iconLabel: 'X', mobileRadius: 360, mobilePhase: toRadians(213) },
+  { id: 'synthesia', name: 'Synthesia', iconLabel: 'S', mobileRadius: 340, mobilePhase: toRadians(240) }
 ];
 
 const queries = [
@@ -101,6 +104,8 @@ const distributedItems = [...distributedInner, ...distributedOuter];
           iconLabel={item.iconLabel}
           orbitRadius={item.orbitRadius}
           phase={item.phase}
+          mobileOrbitRadius={item.mobileRadius}
+          mobilePhase={item.mobilePhase}
           speed={item.speed}
           depth={item.depth}
           layer={item.layer}

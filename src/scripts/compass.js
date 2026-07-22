@@ -68,14 +68,8 @@ export function initCompass({
   const SIGNAL_REST_EXTEND = 22; // px beyond tip at rest
   const SIGNAL_MAX_EXTEND = 35; // maximum stretch
 
-  let currentTickTarget = null;
-  let lastFrameTime = 0;
-
   // ── Animation loop ──
-  const loop = createAnimationLoop((time) => {
-    const delta = lastFrameTime ? time - lastFrameTime : 0;
-    lastFrameTime = time;
-
+  const loop = createAnimationLoop(() => {
     const p = getPointer ? getPointer() : { isActive: false, angle: 0, x: 0, y: 0 };
     const isMobile = window.innerWidth < 768;
 
@@ -92,8 +86,7 @@ export function initCompass({
       needleAngle.speed = FAST_SPEED;
       needleAngle.friction = 0.82;
       needleAngle.setTarget(p.angle);
-      currentTickTarget = null;
-      
+
       // Parallax tilt active
       tiltX.setTarget(p.x * 12);
       tiltY.setTarget(p.y * 8);
@@ -104,23 +97,13 @@ export function initCompass({
       signalStretch.setTarget(clamp(stretchTarget, 0, SIGNAL_MAX_EXTEND - SIGNAL_REST_EXTEND));
     } else {
       if (isMobile) {
-        // Mobile Smooth Sweeping Mode (Continuous 6 degrees/sec)
-        needleAngle.speed = 1.0; // High speed to stick to the moving target
-        needleAngle.friction = 0.9;
-        
-        if (currentTickTarget === null) {
-          // Start sweeping from current position
-          currentTickTarget = needleAngle.value;
+        // Mobile guidance mode: ease toward a real Platform Token, then hold there.
+        const ambient = getAmbientAngle ? getAmbientAngle() : null;
+        if (ambient !== null) {
+          needleAngle.speed = 0.018;
+          needleAngle.friction = 0.86;
+          needleAngle.setTarget(ambient);
         }
-
-        const sweepSpeed = (6 * Math.PI) / 180; // Exactly 6 degrees per second
-        currentTickTarget += sweepSpeed * (delta / 1000);
-        
-        // Normalize
-        while (currentTickTarget > Math.PI) currentTickTarget -= 2 * Math.PI;
-        while (currentTickTarget < -Math.PI) currentTickTarget += 2 * Math.PI;
-
-        needleAngle.setTarget(currentTickTarget);
       } else {
         // Desktop Smooth Mode
         const ambient = getAmbientAngle ? getAmbientAngle() : null;
@@ -129,9 +112,8 @@ export function initCompass({
           needleAngle.friction = 0.82;
           needleAngle.setTarget(ambient);
         }
-        currentTickTarget = null;
       }
-      
+
       // Reset tilt and stretch
       tiltX.setTarget(0);
       tiltY.setTarget(0);

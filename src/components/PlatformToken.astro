@@ -13,18 +13,32 @@ interface Props {
   iconLabel?: string;
   orbitRadius: number;
   phase: number;
+  mobileOrbitRadius?: number;
+  mobilePhase?: number;
   speed?: number;
   depth?: number;
   layer?: 'far' | 'mid' | 'near';
 }
 
-const { id, name, orbitRadius, phase, speed = 1, depth = 0.5, layer = 'mid' } = Astro.props;
+const {
+  id,
+  name,
+  orbitRadius,
+  phase,
+  mobileOrbitRadius,
+  mobilePhase,
+  speed = 1,
+  depth = 0.5,
+  layer = 'mid',
+} = Astro.props;
 
 // Build data attributes for the JS orbital system
 const dataAttrs = {
   'data-orbit-kind': 'platform',
   'data-orbit-radius': orbitRadius,
   'data-orbit-phase': phase,
+  'data-mobile-orbit-radius': mobileOrbitRadius,
+  'data-mobile-orbit-phase': mobilePhase,
   'data-orbit-speed': speed,
   'data-orbit-depth': depth,
 };
@@ -122,13 +136,6 @@ const dataAttrs = {
   @media (max-width: 767px) {
     .platform-token {
       --platform-token-scale: 0.8;
-      translate: 0 32px;
-    }
-  }
-
-  @media (max-width: 767px) and (max-height: 700px) {
-    .platform-token {
-      translate: 0 96px;
     }
   }
 </style>
