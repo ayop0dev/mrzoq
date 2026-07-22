@@ -104,6 +104,19 @@ const dataAttrs = {
     line-height: 1;
   }
 
+  @media (max-width: 767px) {
+    .query-pill,
+    .query-pill--far,
+    .query-pill--mid,
+    .query-pill--near {
+      opacity: 0.12;
+    }
+
+    .query-pill.is-focused {
+      opacity: 0.2;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .query-pill,
     .query-pill.is-focused {
