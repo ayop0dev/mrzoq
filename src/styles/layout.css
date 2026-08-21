@@ -24,14 +24,13 @@
   1. Background (.layer-background)
   2. Ecosystem  (.layer-ecosystem)
   3. Compass    (.layer-compass)
-  4. Content    (.layer-content)
-  5. Header     (.layer-header)
-  6. Footer     (.layer-footer)
+  3. Content    (.layer-content)
+  4. Header     (.layer-header)
+  5. Footer     (.layer-footer)
 */
 
 .layer-background,
-.layer-ecosystem,
-.layer-compass,
+.layer-unified-compass,
 .layer-content,
 .layer-header,
 .layer-footer {
@@ -46,16 +45,8 @@
   contain: strict;
 }
 
-.layer-ecosystem {
-  z-index: var(--z-ecosystem);
-  /* Orbital objects are positioned within this viewport-filling layer */
-  contain: layout style;
-  top: 20px;
-}
-
-.layer-compass {
+.layer-unified-compass {
   z-index: var(--z-compass);
-  pointer-events: auto;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,7 +56,7 @@
 
 .layer-content {
   z-index: var(--z-content);
-  pointer-events: auto;
+  pointer-events: none;
   contain: layout style;
   top: 20px;
 }

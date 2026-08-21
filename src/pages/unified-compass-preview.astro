@@ -1,0 +1,101 @@
+---
+/**
+ * Isolated development preview for the new Unified Compass component.
+ *
+ * Not linked from navigation, not rendered on the homepage, and not referenced
+ * by any legacy Ecosystem/Compass file. Safe sandbox for visual/responsive/
+ * interaction review before any integration decision is made.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import UnifiedCompass from '../components/unified-compass/UnifiedCompass.astro';
+---
+
+<BaseLayout
+  title="Unified Compass — Isolated Preview"
+  description="Isolated development preview for the new Unified Compass component."
+>
+  <Fragment slot="head">
+    <meta name="robots" content="noindex, nofollow" />
+  </Fragment>
+
+  <main class="uc-preview">
+    <div class="uc-preview__toolbar">
+      
+      <span class="uc-preview__hint">
+        Resize the window to check desktop / tablet / mobile / short-mobile behavior. To review
+        reduced-motion behavior, use your browser devtools' "Emulate CSS prefers-reduced-motion"
+        rendering option (or your OS accessibility setting).
+      </span>
+    </div>
+
+    <div class="uc-preview__stage">
+      <UnifiedCompass />
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .uc-preview {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    background: var(--color-bg-gradient);
+  }
+
+  .uc-preview__toolbar {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .uc-preview__toolbar button {
+    font: inherit;
+    padding: 8px 14px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-primary-40);
+    background: var(--color-background-warm);
+    color: var(--color-text-primary);
+    cursor: pointer;
+  }
+
+  .uc-preview__hint {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+    max-width: 60ch;
+  }
+
+  .uc-preview__stage {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-4);
+  }
+
+  /*
+   * Size recalibration pass: the component's own size formula now includes
+   * a `72vh` term (config.js `size.preferred`), so on short viewports
+   * (landscape phones, short laptop windows) it can request a height close
+   * to the full viewport before this page's own chrome (toolbar + stage
+   * padding) is even accounted for. This is the smallest isolated-preview
+   * change that recovers enough vertical room to avoid the compass
+   * colliding with the toolbar or forcing scroll on realistic short
+   * viewports (verified down to ~390px tall in the implementation report) —
+   * it only reduces this PAGE's own padding, never the component's geometry.
+   */
+  @media (max-height: 560px) {
+    .uc-preview__toolbar {
+      padding: var(--space-1) var(--space-2);
+    }
+
+    .uc-preview__stage {
+      padding: var(--space-1);
+    }
+  }
+</style>
+
+<script>
+  
+</script>

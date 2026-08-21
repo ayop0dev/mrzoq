@@ -1,15 +1,14 @@
 ---
 /**
- * Homepage — Marzoq
+ * Homepage - Marzoq
  *
  * The flagship experience. One viewport. Six coexisting systems.
- * Single composition: Background → Ecosystem → Compass → Content → Header → Footer.
+ * Single composition: Background - Unified Compass - Content - Header - Footer.
  *
  * Specification: homepage.specification.md
  */
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Compass from '../components/Compass.astro';
-import Ecosystem from '../components/Ecosystem.astro';
+import UnifiedCompass from '../components/unified-compass/UnifiedCompass.astro';
 import ContentBlock from '../components/ContentBlock.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -17,42 +16,34 @@ import CtaButton from '../components/CtaButton.astro';
 ---
 
 <BaseLayout
-  title="مرزوق — ساعد شركتك تكون الإجابة التي يقدمها الذكاء الاصطناعي"
-  description="مرزوق يساعد الشركات على أن تصبح أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي."
+  title="مرزوق - اجعل شركتك الإجابة في عصر الذكاء الاصطناعي"
+  description="مرزوق يساعدك على أن تصبح أكثر قابلية للاكتشاف والفهم والتوصية من قِبَل أنظمة الذكاء الاصطناعي."
 >
   <!--
     Homepage Viewport Canvas
-    Everything fits within 100vw × 100dvh. No scrolling.
+    Everything fits within 100vw - 100dvh. No scrolling.
   -->
   <div class="homepage page-experience" id="homepage">
-    <!-- ─────────────────────────────────────
+    <!-- ✦
          Layer 1 (back): Background
-         Environmental presence — grid + depth
-         ───────────────────────────────────── -->
+         Environmental presence - grid + depth
+         ✦ -->
     <div class="layer-background" aria-hidden="true">
       <div class="background__grid"></div>
     </div>
 
-    <!-- ─────────────────────────────────────
-         Layer 2: Ecosystem
-         Floating AI platforms and user queries
-         ───────────────────────────────────── -->
-    <div class="layer-ecosystem">
-      <Ecosystem />
+    <!-- ✦
+         Layer 2: Unified Compass
+         The visual origin and floating AI platforms
+         ✦ -->
+    <div class="layer-unified-compass">
+      <UnifiedCompass />
     </div>
 
-    <!-- ─────────────────────────────────────
-         Layer 3: Compass
-         The visual origin — direction
-         ───────────────────────────────────── -->
-    <div class="layer-compass">
-      <Compass />
-    </div>
-
-    <!-- ─────────────────────────────────────
-         Layer 4: Content Layer
-         What → Why → Who → Action
-         ───────────────────────────────────── -->
+    <!-- ✦
+         Layer 3: Content Layer
+         What - Why - Who - Action
+         ✦ -->
     <main class="layer-content" id="main-content">
       <div class="homepage__content-position">
         <ContentBlock
@@ -67,17 +58,17 @@ import CtaButton from '../components/CtaButton.astro';
       </div>
     </main>
 
-    <!-- ─────────────────────────────────────
-         Layer 5: Header
-         Orientation — Logo + Nav
-         ───────────────────────────────────── -->
+    <!-- ✦
+         Layer 4: Header
+         Orientation - Logo + Nav
+         ✦ -->
     <div class="layer-header">
       <Header currentPath="/" />
     </div>
 
-    <!-- ─────────────────────────────────────
-         Layer 6 (front): Footer
-         ───────────────────────────────────── -->
+    <!-- ✦
+         Layer 5 (front): Footer
+         ✦ -->
     <div class="layer-footer">
       <Footer />
     </div>
@@ -85,7 +76,7 @@ import CtaButton from '../components/CtaButton.astro';
 </BaseLayout>
 
 <style>
-  /* ─── Homepage specific layout ─── */
+  /* ✦ Homepage specific layout ✦ */
 
   .homepage {
     /* Transparent to inherit the global body background gradient */
@@ -106,26 +97,23 @@ import CtaButton from '../components/CtaButton.astro';
     -webkit-mask-image: radial-gradient(ellipse 70% 70% at 50% 50%, black 0%, transparent 90%);
   }
 
-  /* Content Layer — positioned to the side of the Compass */
+  /* Content Layer - positioned to the side of the Compass */
   .homepage__content-position {
     position: absolute;
+    pointer-events: auto;
     inset-inline-start: 0;
     top: 50%;
     transform: translateY(-50%);
     max-width: 500px; /* Increased max-width to accommodate larger text */
   }
 
-  /* ─── Tablet ─── */
+  /* ✦ Tablet ✦ */
   @media (min-width: 1200px) {
     /* Shift center of gravity away from the text block to balance the layout */
-    :global(html[dir='rtl']) .layer-compass,
-    :global(html[dir='rtl']) .layer-ecosystem {
-      transform: translateX(-15vw);
+    .layer-unified-compass {
+      transform: translateX(-15vw) !important;
     }
-    :global(html[dir='ltr']) .layer-compass,
-    :global(html[dir='ltr']) .layer-ecosystem {
-      transform: translateX(15vw);
-    }
+    /* removed ltr for now */
   }
 
   @media (max-width: 1199px) {
@@ -135,17 +123,14 @@ import CtaButton from '../components/CtaButton.astro';
     }
   }
 
-  /* ─── Mobile ─── */
+  /* ✦ Mobile ✦ */
   @media (max-width: 767px) {
     /*
       On mobile: Content Block moves below the Compass.
-      Translate both Compass and Ecosystem UP to free up space.
+      Translate the Unified Compass UP to free up space.
     */
-    :global(html[dir='rtl']) .layer-compass,
-    :global(html[dir='rtl']) .layer-ecosystem,
-    :global(html[dir='ltr']) .layer-compass,
-    :global(html[dir='ltr']) .layer-ecosystem {
-      transform: translateY(calc(-11vh - 70px));
+    .layer-unified-compass {
+      transform: translateY(calc(-11vh - 70px)) !important;
     }
 
     .homepage__content-position {
@@ -165,11 +150,8 @@ import CtaButton from '../components/CtaButton.astro';
   }
 
   @media (max-width: 767px) and (max-height: 700px) {
-    :global(html[dir='rtl']) .layer-compass,
-    :global(html[dir='rtl']) .layer-ecosystem,
-    :global(html[dir='ltr']) .layer-compass,
-    :global(html[dir='ltr']) .layer-ecosystem {
-      transform: translateY(calc(-11vh - 120px));
+    .layer-unified-compass {
+      transform: translateY(calc(-11vh - 120px)) !important;
     }
 
     .homepage__content-position {
@@ -177,57 +159,3 @@ import CtaButton from '../components/CtaButton.astro';
     }
   }
 </style>
-
-<!--
-  Homepage Interaction Script
-  Boots the Compass and Ecosystem animation systems.
-  Runs only when JavaScript is available; SVG and content remain without JS.
--->
-<script>
-  import { initCompass } from '../scripts/compass.js';
-  import { initEcosystem } from '../scripts/ecosystem.js';
-  import { createPointerTracker } from '../scripts/motion/index.js';
-
-  // Wait for DOM ready
-  document.addEventListener('DOMContentLoaded', () => {
-    const svgEl = document.querySelector('.compass__svg');
-    const needleEl = document.querySelector('.compass__needle');
-    const signalLine = document.querySelector('.compass__signal-line');
-    const signalTip = document.querySelector('.compass__signal-tip');
-    const signalRing = document.querySelector('.compass__signal-ring');
-    const ecosystemObjects = document.querySelector('.ecosystem__objects');
-
-    if (!svgEl || !needleEl || !ecosystemObjects) return;
-
-    const compassLayer = document.querySelector('.layer-compass');
-    // Single shared pointer tracker — both Compass and Ecosystem read from it
-    const pointer = createPointerTracker(compassLayer || document.documentElement);
-
-    let ecosystemInstance = null;
-
-    // Initialize Compass — pass pointer as getter so it reads current state each frame
-    const compass = initCompass({
-      svgEl,
-      needleEl,
-      signalLine,
-      signalTip,
-      signalRing,
-      getPointer: () => pointer,
-      getAmbientAngle: () => (ecosystemInstance ? ecosystemInstance.ambientAngle : null),
-    });
-
-    // Initialize Ecosystem with Compass direction feed and shared pointer
-    ecosystemInstance = initEcosystem({
-      containerEl: ecosystemObjects,
-      getAngle: () => compass.angle,
-      getPointer: () => ({ x: pointer.x, y: pointer.y }),
-    });
-
-    // Cleanup on page unload (important for Astro view transitions)
-    document.addEventListener('astro:before-swap', () => {
-      compass.destroy();
-      if (ecosystemInstance) ecosystemInstance.destroy();
-      pointer.destroy();
-    });
-  });
-</script>

@@ -1,0 +1,690 @@
+---
+/**
+ * UnifiedCompass — new, isolated component.
+ *
+ * One root, one coordinate system, one runtime (runtime.js). Rings, needle,
+ * and floating elements all share the same center — see unified-compass-component-spec.md.
+ *
+ * This component does not modify, import from, or depend on the legacy
+ * Ecosystem/Compass implementation in any way.
+ */
+import { UC_CONFIG } from '../../scripts/unified-compass/config.js';
+import { FLOATING_ELEMENTS } from '../../scripts/unified-compass/data.js';
+import { AI_LOGOS } from '../../scripts/unified-compass/ai-logos.js';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className } = Astro.props;
+
+// SVG dial is drawn in a fixed -100..100 local coordinate space; the CSS size
+// (UC_CONFIG.size) scales the whole square uniformly, so this never needs to
+// know real pixel dimensions.
+const R = 100;
+const NEEDLE = UC_CONFIG.needle;
+const shaftTipY = -(NEEDLE.lengthRatio * R);
+const tipEndY = shaftTipY - NEEDLE.tipLengthRatio * R;
+const shaftHalfWidth = (NEEDLE.shaftWidthRatio * R) / 2;
+// A slender, only slightly flared triangle rather than a wide arrowhead.
+const tipHalfWidth = shaftHalfWidth * 2;
+// Tail starts right at the hub's own outer edge (legacy-inspired: the
+// counterweight begins just past the hub ring, not at dead center) and
+// extends `overhangRatio` further.
+const hubOuterR = NEEDLE.hubOuterRatio * R;
+const hubInnerR = NEEDLE.hubInnerRatio * R;
+const hubCoreR = NEEDLE.hubCoreRatio * R;
+const tailStartY = hubOuterR;
+const tailLengthY = NEEDLE.overhangRatio * R;
+---
+
+<div
+  class={`unified-compass ${className ?? ''}`}
+  data-unified-compass
+  style={`--uc-size-min:${UC_CONFIG.size.min}; --uc-size-preferred:${UC_CONFIG.size.preferred}; --uc-size-max:${UC_CONFIG.size.max}; --uc-pill-height:${UC_CONFIG.pill.heightPx}px; --uc-pill-logo-size:${UC_CONFIG.pill.logoSizePx}px; --uc-pill-logo-gap:${UC_CONFIG.pill.logoGapPx}px;`}
+>
+  <svg
+    class="unified-compass__dial"
+    viewBox={`-${R} -${R} ${R * 2} ${R * 2}`}
+    aria-hidden="true"
+    focusable="false"
+  >
+    <g class="unified-compass__rings">
+      {
+        Array.from({ length: UC_CONFIG.rings.count }).map((_, i) => (
+          <circle
+            cx="0"
+            cy="0"
+            r={UC_CONFIG.rings.radiusRatios[i] * R}
+            fill="none"
+            stroke="currentColor"
+            stroke-width="0.6"
+            opacity={UC_CONFIG.rings.opacities[i]}
+          />
+        ))
+      }
+    </g>
+
+    <g class="unified-compass__needle" data-uc-needle transform="rotate(0)">
+      <rect
+        class="unified-compass__needle-tail"
+        x={-shaftHalfWidth}
+        y={tailStartY}
+        width={shaftHalfWidth * 2}
+        height={tailLengthY}
+        rx={shaftHalfWidth}></rect>
+      <rect
+        class="unified-compass__needle-shaft"
+        x={-shaftHalfWidth}
+        y={shaftTipY}
+        width={shaftHalfWidth * 2}
+        height={-shaftTipY}
+        rx={shaftHalfWidth}></rect>
+      <polygon
+        class="unified-compass__needle-tip"
+        points={`0,${tipEndY} ${-tipHalfWidth},${shaftTipY} ${tipHalfWidth},${shaftTipY}`}
+      ></polygon>
+    </g>
+
+    <!-- Hub: fixed pivot, does not rotate with the needle (legacy-inspired
+         three-piece instrument: outer ring, inner ring, filled core). -->
+    <g class="unified-compass__hub">
+      <circle
+        class="unified-compass__hub-outer"
+        cx="0"
+        cy="0"
+        r={hubOuterR}
+        fill="none"
+        stroke="currentColor"
+        stroke-width={hubOuterR * 0.11}></circle>
+      <circle
+        class="unified-compass__hub-inner"
+        cx="0"
+        cy="0"
+        r={hubInnerR}
+        fill="none"
+        stroke="currentColor"
+        stroke-width={hubInnerR * 0.13}></circle>
+      <circle class="unified-compass__hub-core" cx="0" cy="0" r={hubCoreR}></circle>
+    </g>
+  </svg>
+
+  <div class="unified-compass__objects" data-uc-objects>
+    {
+      FLOATING_ELEMENTS.map((item) =>
+        item.href ? (
+          <a
+            class="unified-compass__element"
+            data-uc-element
+            data-id={item.id}
+            data-has-logo={item.logo ? 'true' : undefined}
+            href={item.href}
+            lang={item.lang}
+            aria-expanded="false"
+            style={`--drift-delay:${item.driftDelaySec}s; --drift-duration:${item.driftDurationSec}s;`}
+          >
+            <span
+              class="unified-compass__element-surface"
+              data-tier={item.tier}
+              data-emphasis={item.emphasis}
+            >
+              {
+                item.logo && (
+                  <span
+                    class="unified-compass__element-logo"
+                    data-uc-logo
+                    aria-hidden="true"
+                    set:html={AI_LOGOS[item.logo]}
+                  />
+                )
+              }
+              <span class="unified-compass__element-label" data-uc-label>
+                {item.label}
+              </span>
+            </span>
+          </a>
+        ) : (
+          <span
+            class="unified-compass__element"
+            data-uc-element
+            data-id={item.id}
+            data-has-logo={item.logo ? 'true' : undefined}
+            lang={item.lang}
+            aria-hidden="true"
+            style={`--drift-delay:${item.driftDelaySec}s; --drift-duration:${item.driftDurationSec}s;`}
+          >
+            <span
+              class="unified-compass__element-surface"
+              data-tier={item.tier}
+              data-emphasis={item.emphasis}
+            >
+              {
+                item.logo && (
+                  <span
+                    class="unified-compass__element-logo"
+                    data-uc-logo
+                    aria-hidden="true"
+                    set:html={AI_LOGOS[item.logo]}
+                  />
+                )
+              }
+              <span class="unified-compass__element-label" data-uc-label>
+                {item.label}
+              </span>
+            </span>
+          </span>
+        )
+      )
+    }
+  </div>
+</div>
+
+<style>
+  .unified-compass {
+    /* --uc-drift-amp-px and --uc-focus-scale are set by runtime.js per the
+       active responsive mode (config.js `responsive.modes`) — the fallbacks
+       below are the shared defaults (UC_CONFIG.drift.amplitudePx /
+       UC_CONFIG.focus.pulseScale) and only apply before the first layout(). */
+    --uc-drift-amp-px: 7px;
+    --uc-focus-scale: 1.08;
+    --uc-drift-scale: 1;
+    position: relative;
+    width: clamp(var(--uc-size-min), var(--uc-size-preferred), var(--uc-size-max));
+    height: clamp(var(--uc-size-min), var(--uc-size-preferred), var(--uc-size-max));
+    color: var(--color-primary, #065830);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .unified-compass {
+      --uc-drift-scale: 0.15;
+    }
+  }
+
+  .unified-compass__dial {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .unified-compass__needle-tail,
+  .unified-compass__needle-shaft,
+  .unified-compass__needle-tip,
+  .unified-compass__hub-core {
+    fill: currentColor;
+  }
+
+  /* Slim and understated — visible, but never competing with the forward
+     direction the needle is pointing. */
+  .unified-compass__needle-tail {
+    opacity: 0.32;
+  }
+
+  /* Hub: present but modest — a lightweight needle now carries the
+     instrument's visual identity, not the hub. */
+  .unified-compass__hub {
+    opacity: 1;
+  }
+
+  .unified-compass__hub-outer {
+    opacity: 0.7;
+  }
+
+  .unified-compass__hub-inner {
+    opacity: 0.8;
+  }
+
+  .unified-compass__objects {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  /* ─── Floating element: outer node owns position + bounded drift ─── */
+
+  .unified-compass__element {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: block;
+    text-decoration: none;
+    color: currentColor;
+
+    transform: translate(calc(-50% + var(--ax, 0px)), calc(-50% + var(--ay, 0px)));
+    translate: 0 0;
+    animation: uc-drift var(--drift-duration, 5s) ease-in-out infinite;
+    animation-delay: var(--drift-delay, 0s);
+  }
+
+  a.unified-compass__element {
+    pointer-events: auto;
+  }
+
+  /* Items beyond the active responsive mode's visibleCount (config.js
+     `responsive.modes`) — hidden, not removed from the DOM/dataset, and
+     naturally excluded from tab order / interaction since display:none. */
+  .unified-compass__element.uc-hidden {
+    display: none;
+  }
+
+  /*
+   * Each step below is expressed as a ratio of the single injected base
+   * amplitude (--uc-drift-amp-px, from UC_CONFIG.drift.amplitudePx), scaled
+   * by the reduced-motion multiplier (--uc-drift-scale). Changing
+   * `amplitudePx` in config.js now actually changes the rendered drift
+   * distance (audit D2/D4 — previously these six values were hardcoded here
+   * and the config field did nothing).
+   */
+  @keyframes uc-drift {
+    0% {
+      translate: 0 0;
+    }
+    25% {
+      translate: calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * 0.625)
+        calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * -1);
+    }
+    50% {
+      translate: calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * -0.875)
+        calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * 0.25);
+    }
+    75% {
+      translate: calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * -0.375)
+        calc(var(--uc-drift-scale) * var(--uc-drift-amp-px) * 0.875);
+    }
+    100% {
+      translate: 0 0;
+    }
+  }
+
+  /* ─── Surface: the visible pill — brightness tier, focus fade, pulse ─── */
+
+  .unified-compass__element-surface {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--uc-pill-logo-gap, 6px);
+    height: var(--uc-pill-height, 34px);
+    padding: 0 var(--uc-pill-pad, 12px);
+    border-radius: 9999px;
+    background: var(--color-glass, rgba(234, 222, 210, 0.55));
+    border: 1px solid var(--color-glass-border, rgba(6, 88, 48, 0.14));
+    white-space: nowrap;
+    overflow: hidden;
+
+    --tier-opacity: 0.45;
+    /* Resting visual "presence" per tier — see [data-tier] rules below.
+       Deliberately capped well under 1.08 (UC_CONFIG.focus.pulseScale): the
+       existing geometry safety math (distribution.js resolvePillGeometry,
+       runtime.js computeExpandMaxWidths) already reserves enough margin for
+       ANY visible item to momentarily reach 1.08x size during its focus
+       pulse — a resting scale that never exceeds that same ceiling
+       introduces no new overlap risk and needs no re-verification of that
+       math. This is a CSS `scale` value, not `transform`, so it never
+       affects layout/box-model sizing that any JS measurement relies on. */
+    --uc-tier-scale: 1;
+    opacity: var(--tier-opacity);
+    scale: var(--uc-tier-scale);
+    /* Deliberately NO min-width/max-width here, and no width-related
+       transition. The collapsed (default) shape is NOT a shared value both
+       categories fall back to — it is defined explicitly and independently
+       by the two rules below, one per visual category. Each category rule
+       carries its own complete `transition` (transition is a single
+       non-additive shorthand, so splitting it across a shared base and a
+       category override would silently drop whichever list doesn't win the
+       cascade), so no ordering trick is at play here — either category rule
+       can be read, changed, or removed on its own without affecting the
+       other. */
+  }
+
+  a.unified-compass__element .unified-compass__element-surface {
+    cursor: pointer;
+  }
+
+  /* ─── LOGO items: default = perfect circle, logo only ──────────────────
+     Pins min-width/max-width to the pill's own height (width == height +
+     border-radius:9999px is a true circle) and zeroes padding/gap — no room
+     is needed since the collapsed state shows no text at all. */
+  .unified-compass__element[data-has-logo] .unified-compass__element-surface {
+    min-width: var(--uc-pill-height, 34px);
+    max-width: var(--uc-pill-height, 34px);
+    padding: 0;
+    gap: 0;
+    transition:
+      min-width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      max-width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      padding 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      gap 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-radius 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+      scale 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ─── NON-LOGO items: default = compact rectangular preview pill ───────
+     Pins min-width/max-width to --uc-pill-min (an existing, already-computed
+     token — never a new arbitrary size, and never the logo items' circle
+     size). Width clearly exceeds height at every responsive mode (~43-47px
+     vs the fixed 34px height), so border-radius:9999px reads as a rounded
+     rectangle/pill, never a circle. The label stays visible (never
+     opacity:0/width:0 the way a logo item's does) and is simply cropped by
+     the surface's own overflow:hidden at this narrow width, always ending in
+     an ellipsis. flex-start (rather than the shared center) keeps that
+     visible window anchored to the actual START of the phrase — the correct
+     edge for either writing direction, since flex-start follows the item's
+     own `dir` — instead of a symmetric center-crop that would show the
+     MIDDLE of the phrase.
+     Background is deliberately NOT overridden here — logo and non-logo
+     items share the exact same --color-glass surface (set once, on the base
+     .unified-compass__element-surface rule above). Every floating item
+     belongs to the same ecosystem; keyword vs. AI-platform is communicated
+     by shape (circle vs. rounded rectangle) and tier hierarchy, never by a
+     different surface color. */
+  .unified-compass__element:not([data-has-logo]) .unified-compass__element-surface {
+    min-width: var(--uc-pill-min, 45px);
+    max-width: var(--uc-pill-min, 45px);
+    justify-content: flex-start;
+    transition:
+      min-width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      max-width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 700ms cubic-bezier(0.4, 0, 0.2, 1),
+      scale 700ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .unified-compass__element:not([data-has-logo]) .unified-compass__element-label {
+    text-overflow: ellipsis;
+  }
+
+  /* AI product logo mark: rendered before the label, sized off the same
+     config-driven size the pill text-fit math accounts for (config.js
+     `pill.logoSizePx`, read via runtime.js so the two never disagree).
+     Source SVGs are square (128x128 viewBox); an equal width/height keeps
+     them unstretched and sharp. Source markup ships with a plain
+     `fill="black"` attribute — a presentation attribute, so it's
+     automatically overridden by the `fill: currentColor` rule below without
+     ever touching the SVG files themselves, inheriting the same
+     --color-primary the rest of the compass (rings, needle, pill text)
+     already uses via currentColor. */
+  .unified-compass__element-logo {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: var(--uc-pill-logo-size, 18px);
+    height: var(--uc-pill-logo-size, 18px);
+  }
+
+  .unified-compass__element-logo :global(svg) {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .unified-compass__element-logo :global(path) {
+    fill: currentColor;
+  }
+
+  /* Label stays in the accessible name at all times (opacity, never
+     display:none/visibility:hidden) — only its rendered box collapses to 0.
+     --uc-label-w is set by runtime.js's fitPillText from the same measured
+     scrollWidth already used for the font-fit pass, so the 0 -> revealed
+     transition has two concrete pixel endpoints (required for a smooth CSS
+     transition — animating to/from `auto` is not reliably smooth). */
+  .unified-compass__element[data-has-logo] .unified-compass__element-label {
+    width: 0;
+    opacity: 0;
+    transition:
+      width 320ms cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 200ms ease;
+  }
+
+  /* Desktop: real hover-capable pointer only (same media feature as
+     config.js `pointerModeQuery`) — never fires from a touch tap, so this
+     can never become hover-emulation on touch. Applies to every item now,
+     logo or not — each expands to its OWN per-item content-fit width
+     (--uc-expand-w, computed once per layout() pass in runtime.js from that
+     item's actual measured label, not a shared value). */
+  @media (hover: hover) and (pointer: fine) {
+    .unified-compass__element:hover {
+      z-index: 2;
+    }
+    .unified-compass__element:hover .unified-compass__element-surface {
+      min-width: var(--uc-expand-w, var(--uc-pill-min));
+      max-width: var(--uc-expand-w, var(--uc-pill-min));
+      --tier-opacity: 1;
+    }
+    /* Logo items only: restore padding/gap (zeroed while collapsed) and
+       reveal the label — non-logo items never zeroed these, and their label
+       was never hidden, so nothing extra is needed for them here. */
+    .unified-compass__element[data-has-logo]:hover .unified-compass__element-surface {
+      padding: 0 var(--uc-pill-pad);
+      gap: var(--uc-pill-logo-gap);
+    }
+    .unified-compass__element[data-has-logo]:hover .unified-compass__element-label {
+      width: var(--uc-label-w, auto);
+      opacity: 1;
+    }
+  }
+
+  /* Keyboard focus: the desktop-equivalent trigger, but NOT gated behind the
+     hover media query — a keyboard can be used on any device class. */
+  .unified-compass__element:focus-visible {
+    z-index: 2;
+  }
+  .unified-compass__element:focus-visible .unified-compass__element-surface {
+    min-width: var(--uc-expand-w, var(--uc-pill-min));
+    max-width: var(--uc-expand-w, var(--uc-pill-min));
+    --tier-opacity: 1;
+  }
+  .unified-compass__element[data-has-logo]:focus-visible .unified-compass__element-surface {
+    padding: 0 var(--uc-pill-pad);
+    gap: var(--uc-pill-logo-gap);
+  }
+  .unified-compass__element[data-has-logo]:focus-visible .unified-compass__element-label {
+    width: var(--uc-label-w, auto);
+    opacity: 1;
+  }
+
+  /* Touch: reuses the EXISTING touchTargetId / .is-focused signal (runtime.js
+     updateFocus) unchanged — on touch, is-focused already means "this is the
+     tapped item," so no new state machine is introduced. Gated to
+     [data-device-class='touch'] (set by runtime.js) so the idle needle sweep
+     passing near an item on DESKTOP never expands it — only literal
+     hover/focus do that, per the media-query block above. --tier-opacity:1
+     is already applied by the pre-existing `.is-focused` rule, so it is not
+     repeated here. Applies to every item now, same as the hover/focus
+     triggers above. */
+  .unified-compass[data-device-class='touch'] .unified-compass__element.is-focused {
+    z-index: 2;
+  }
+  .unified-compass[data-device-class='touch']
+    .unified-compass__element.is-focused
+    .unified-compass__element-surface {
+    min-width: var(--uc-expand-w, var(--uc-pill-min));
+    max-width: var(--uc-expand-w, var(--uc-pill-min));
+  }
+  .unified-compass[data-device-class='touch']
+    .unified-compass__element[data-has-logo].is-focused
+    .unified-compass__element-surface {
+    padding: 0 var(--uc-pill-pad);
+    gap: var(--uc-pill-logo-gap);
+  }
+  .unified-compass[data-device-class='touch']
+    .unified-compass__element[data-has-logo].is-focused
+    .unified-compass__element-label {
+    width: var(--uc-label-w, auto);
+    opacity: 1;
+  }
+
+  /* ─── Tier hierarchy: depth from several small properties together, never
+     size alone — opacity, resting scale, border strength, and elevation all
+     move together per tier, each restrained (premium-OS calm, not gaming
+     flashiness): borders separate the pill from the background and nothing
+     more, shadows are soft and low-opacity, scale differences are a few
+     percent, never dramatic. Every --uc-tier-scale value stays comfortably
+     under 1.08 (UC_CONFIG.focus.pulseScale) — see the base rule's comment
+     above for why that keeps the existing geometry safety math valid
+     untouched. Border-WIDTH is deliberately never changed here (only
+     border-color/opacity — reducing intensity, per design feedback, rather
+     than the width) — runtime.js's text-fit math accounts for a fixed
+     1px-per-side border overhead (SURFACE_BORDER_WIDTH_PX); varying width
+     per tier would reopen the exact ~2px shortfall class of bug that was
+     fixed for that constant. Box-shadow is a paint-only effect (never
+     affects layout or any JS-measured dimension), so it's free to vary. */
+  .unified-compass__element-surface[data-tier='dim'] {
+    --tier-opacity: 0.34;
+    --uc-tier-scale: 0.96;
+    border-color: var(--color-primary-10, rgba(6, 88, 48, 0.1));
+    box-shadow: none;
+  }
+  .unified-compass__element-surface[data-tier='medium'] {
+    --tier-opacity: 0.55;
+    --uc-tier-scale: 1;
+    border-color: var(--color-glass-border, rgba(6, 88, 48, 0.12));
+    box-shadow: 0 1px 2px var(--color-primary-10, rgba(6, 88, 48, 0.08));
+  }
+  .unified-compass__element-surface[data-tier='bright'] {
+    --tier-opacity: 0.78;
+    --uc-tier-scale: 1.04;
+    /* A noticeably lighter border than the previous pass (was
+       --color-primary-40 / 0.4 alpha — read as an outline, not a hairline).
+       --color-primary-20 keeps it just visibly stronger than medium's
+       baseline border without ever competing with the logo/label for
+       attention. */
+    border-color: var(--color-primary-20, rgba(6, 88, 48, 0.2));
+    box-shadow: 0 2px 6px var(--color-primary-10, rgba(6, 88, 48, 0.1));
+  }
+
+  /* Bright items also carry slightly heavier label weight when their text is
+     visible (expanded, or a non-logo bright pill's collapsed preview) —
+     another small, additive contributor to hierarchy rather than relying on
+     size alone. Reuses the existing --weight-semibold token. */
+  .unified-compass__element-surface[data-tier='bright'] .unified-compass__element-label {
+    font-weight: var(--weight-semibold, 600);
+  }
+
+  /* Logo size per tier — a ratio of the existing --uc-pill-logo-size token
+     (config.js `pill.logoSizePx`), not a new hardcoded constant, so tuning
+     that token still scales every tier proportionally. runtime.js measures
+     the logo's ACTUAL rendered width live (getBoundingClientRect()) for its
+     text-fit budget, so a bigger/smaller logo here is automatically
+     accounted for with no code changes needed. Inert for non-logo items —
+     no .unified-compass__element-logo exists there to match. Bright's ratio
+     is deliberately the largest swing of any tier property (vs. the now
+     much-subtler border/shadow) — the logo, not decoration, should read as
+     the hero for a bright logo item. */
+  .unified-compass__element-surface[data-tier='dim'] .unified-compass__element-logo {
+    width: calc(var(--uc-pill-logo-size, 18px) * 0.88);
+    height: calc(var(--uc-pill-logo-size, 18px) * 0.88);
+  }
+  .unified-compass__element-surface[data-tier='bright'] .unified-compass__element-logo {
+    width: calc(var(--uc-pill-logo-size, 18px) * 1.18);
+    height: calc(var(--uc-pill-logo-size, 18px) * 1.18);
+  }
+
+  /* ─── Per-item emphasis override (data-driven, not positional) ──────────
+     A deliberate, curated exception for a specific item — set via data.js's
+     optional `emphasis` field, rendered as `data-emphasis` alongside
+     `data-tier` — never derived from DOM order/nth-child. Same-specificity
+     as the [data-tier] rules above (one attribute selector each on the same
+     element), so source order decides the winner: these rules are placed
+     after, so an item's own emphasis always wins over its tier default.
+     Intentionally used sparingly — most items carry no `emphasis` at all and
+     simply take their tier's values untouched. */
+  .unified-compass__element-surface[data-emphasis='raised'] {
+    --uc-tier-scale: 1.06;
+    box-shadow: 0 3px 8px var(--color-primary-20, rgba(6, 88, 48, 0.15));
+  }
+  .unified-compass__element-surface[data-emphasis='muted'] {
+    --uc-tier-scale: 0.92;
+    box-shadow: none;
+  }
+
+  .unified-compass__element.is-focused .unified-compass__element-surface {
+    --tier-opacity: 1;
+    animation: uc-pulse 480ms cubic-bezier(0.4, 0, 0.2, 1) 1;
+  }
+
+  .unified-compass__element:focus-visible .unified-compass__element-surface {
+    --tier-opacity: 1;
+    outline: 2px solid currentColor;
+    outline-offset: 3px;
+  }
+
+  @keyframes uc-pulse {
+    0% {
+      scale: var(--uc-tier-scale, 1);
+    }
+    45% {
+      /* var(--uc-focus-scale) — set by runtime.js per responsive mode, so the
+         value used here always matches the value the pill-width safety
+         calculation in distribution.js assumed (config.js `focus.pulseScale`
+         / per-mode `focusScale`). */
+      scale: var(--uc-focus-scale, 1.08);
+    }
+    100% {
+      scale: var(--uc-tier-scale, 1);
+    }
+  }
+
+  .unified-compass__element-label {
+    display: inline-block;
+    max-width: 100%;
+    min-width: 0;
+    font-family: var(--font-sans, 'Thmanyah Sans', system-ui, sans-serif);
+    font-size: var(--uc-pill-font, 12px);
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    /* Default: no ellipsis mark while text isn't known to be truncated (the
+       common case, where it simply fits). runtime.js adds `.uc-truncated`
+       only after verifying — by measurement, not estimation — that even the
+       minimum readable font size doesn't fit (audit D4). */
+    text-overflow: clip;
+  }
+
+  .unified-compass__element.uc-truncated .unified-compass__element-label {
+    text-overflow: ellipsis;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .unified-compass__element-surface,
+    .unified-compass__element.is-focused .unified-compass__element-surface {
+      transition-duration: 700ms;
+    }
+
+    .unified-compass__element[data-has-logo] .unified-compass__element-surface,
+    .unified-compass__element[data-has-logo] .unified-compass__element-label {
+      transition-duration: 700ms;
+    }
+  }
+</style>
+
+<script>
+  import { initUnifiedCompass } from '../../scripts/unified-compass/runtime.js';
+
+  function boot() {
+    const roots = document.querySelectorAll('[data-unified-compass]');
+    const instances = [];
+
+    roots.forEach((root) => {
+      if (root instanceof HTMLElement) {
+        instances.push(initUnifiedCompass(root));
+      }
+    });
+
+    document.addEventListener(
+      'astro:before-swap',
+      () => {
+        instances.forEach((instance) => instance.destroy());
+      },
+      { once: true }
+    );
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot);
+  } else {
+    boot();
+  }
+</script>

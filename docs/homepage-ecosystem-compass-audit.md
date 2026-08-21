@@ -1340,3 +1340,1203 @@ All criteria are pass/fail checks. Geometry-dependent checks use synchronized br
 - **Pass** if the Ecosystem-to-Compass ambient-angle contract and Compass-to-Ecosystem current-angle contract both remain operational; otherwise **fail**.
 - **Pass** if no source-code change introduces an unrecorded runtime constant, device-specific branch, random position source, duplicate component instance, or duplicate animation loop; otherwise **fail**.
 - **Pass** if all canonical device categories have recorded validation results for normal motion and reduced motion; otherwise **fail**. Exact viewport selections and browser-computed results **require runtime validation**.
+
+# Target Unified Component Architecture
+
+## Purpose
+
+This section defines the target architecture for the next-generation Homepage Ecosystem component.
+
+It does **not** modify the current implementation.
+
+It defines a completely new component that will be developed separately, validated independently, and only replace the current Homepage component after final approval.
+
+The visual identity, motion language, interaction model, datasets, and overall user experience remain the same unless explicitly overridden by this section.
+
+---
+
+# Primary Architectural Goal
+
+The entire visual system becomes **one unified component** instead of two coordinated components.
+
+Current architecture:
+
+Homepage
+├── layer-ecosystem
+│   ├── Rings
+│   ├── Platform Tokens
+│   └── Query Pills
+│
+└── layer-compass
+    └── Compass
+
+Target architecture:
+
+Homepage
+└── Unified Ecosystem Component
+    ├── Rings
+    ├── Compass
+    ├── Platform Tokens
+    └── Query Pills
+
+Every visual element belongs to the same component hierarchy.
+
+There is no independent Ecosystem layer.
+
+There is no independent Compass layer.
+
+---
+
+# Unified Coordinate System
+
+The new component owns exactly one coordinate system.
+
+All visual calculations originate from the same center.
+
+There shall never be multiple runtime centers.
+
+The following elements share the exact same center coordinate:
+
+- Compass
+- Rings
+- Orbit Engine
+- Platform Tokens
+- Query Pills
+- Future floating objects
+
+The center is defined once.
+
+Every orbit, animation, interaction, and layout calculation references this center.
+
+No child element computes or owns its own independent origin.
+
+---
+
+# Single Visual Origin
+
+The component contains one visual origin only.
+
+This origin represents:
+
+- Compass center
+- Ring center
+- Orbit center
+- Optical center
+
+Those concepts are intentionally unified.
+
+No runtime translation is allowed between them.
+
+No correction offsets are allowed between them.
+
+No synchronization logic is allowed between multiple centers because only one center exists.
+
+---
+
+# Single Parent Container
+
+The component owns one root container.
+
+The root container becomes the only positioning context.
+
+Every visual object is positioned relative to this container.
+
+Nothing inside the component positions itself relative to:
+
+- window.innerWidth
+- window.innerHeight
+- document
+- viewport center
+
+All positioning is local to the unified component.
+
+---
+
+# Unified Runtime Engine
+
+The component behaves as one runtime system.
+
+Instead of multiple independent systems exchanging state, the new implementation behaves as one coordinated runtime engine.
+
+The runtime owns:
+
+- one animation loop
+- one coordinate system
+- one resize handler
+- one pointer tracker
+- one responsive calculation
+- one orbit controller
+
+Individual internal modules may exist for code organization, but they must behave as one runtime architecture.
+
+---
+
+# Unified Orbit Model
+
+Every floating object belongs to one orbit system.
+
+Objects may have different:
+
+- orbit radius
+- angular speed
+- direction
+- orbit layer
+- orbit family
+- opacity
+- interaction priority
+
+However every orbit is calculated from the same origin.
+
+No orbit may introduce its own center.
+
+---
+
+# Visual Layering
+
+The component internally contains multiple visual groups.
+
+These groups are rendering groups only.
+
+They are not independent coordinate systems.
+
+Recommended rendering order:
+
+1. Rings
+2. Query Pills
+3. Platform Tokens
+4. Compass
+
+Rendering order must never imply different coordinate origins.
+
+---
+
+# Responsive Behaviour
+
+Responsive behavior must modify only:
+
+- orbit radius
+- spacing
+- scaling
+- density
+- visibility
+- safe areas
+
+Responsive behavior must never create a different coordinate system.
+
+Desktop, tablet and mobile all share the exact same center.
+
+Only the surrounding geometry changes.
+
+---
+
+# Safe Distribution
+
+Floating objects must always be distributed around the unified center.
+
+Distribution quality becomes a first-class architectural requirement.
+
+The runtime is responsible for producing visually balanced layouts.
+
+The implementation must avoid situations where objects appear visually concentrated on one side while leaving large empty sectors on another.
+
+The target is optical balance rather than mathematical symmetry.
+
+---
+
+# Future Extensibility
+
+Every future floating object must be attachable without creating a new layer.
+
+Examples include:
+
+- AI platforms
+- Search queries
+- Signals
+- Decorative objects
+- Future orbit families
+
+All future objects inherit the same coordinate system automatically.
+
+No future feature should require introducing another independent center.
+
+---
+
+# Architectural Constraints
+
+The following rules are mandatory.
+
+The implementation MUST NOT:
+
+- create multiple runtime centers
+- synchronize two different coordinate systems
+- compute object positions from viewport center
+- compute object positions from window center
+- introduce correction offsets between Compass and Ecosystem
+- maintain separate Compass and Ecosystem positioning logic
+
+The implementation MUST:
+
+- own one coordinate system
+- own one visual center
+- own one runtime controller
+- own one parent positioning context
+- calculate every orbit from the unified center
+
+---
+
+# Migration Strategy
+
+This architecture is intentionally isolated from the current Homepage.
+
+Implementation order:
+
+1. Build the new component.
+2. Validate visual behavior.
+3. Validate responsive behavior.
+4. Validate floating-object distribution.
+5. Validate interaction.
+6. Validate animation.
+7. Replace the current Homepage component only after approval.
+
+The existing Homepage implementation remains the production reference until the new unified component reaches feature parity.
+
+# Unified Geometry Model
+
+## Purpose
+
+This section defines the geometric rules governing the Unified Ecosystem Component.
+
+The objective is to ensure that every visual element behaves as part of one coherent spatial system.
+
+Geometry is considered a shared infrastructure.
+
+Individual elements never define their own geometric reference.
+
+---
+
+# Global Center
+
+The component owns one global center.
+
+```
+Unified Center
+```
+
+This point becomes the origin for every spatial calculation performed inside the component.
+
+The Unified Center is immutable during runtime except when the component itself is resized.
+
+It represents the visual, mathematical and interaction center simultaneously.
+
+There shall never be more than one center.
+
+---
+
+# Coordinate Space
+
+Every object exists inside the same local coordinate space.
+
+All positions are calculated relative to:
+
+```
+(0,0) = Unified Center
+```
+
+Every floating element is represented as:
+
+```
+Position =
+Center
++
+Orbit Offset
++
+Optional Local Offset
+```
+
+No object is positioned directly using viewport coordinates.
+
+No object references document coordinates.
+
+No object references another independent layer.
+
+---
+
+# Orbit System
+
+Every floating element belongs to an orbit.
+
+An orbit is defined by geometric properties rather than hardcoded screen positions.
+
+Each orbit may define:
+
+- radius
+- angle
+- angular velocity
+- rotation direction
+- priority
+- visibility rules
+
+Objects may belong to different orbit families while still sharing the same center.
+
+---
+
+# Orbit Families
+
+The architecture supports multiple orbit families.
+
+Examples include:
+
+Compass Ring
+
+Platform Orbit
+
+Query Orbit
+
+Future Orbit Types
+
+Each family may use different radii and motion characteristics.
+
+They never own different centers.
+
+---
+
+# Radius Definition
+
+Orbit radius is always measured from the Unified Center.
+
+No radius is measured from another object.
+
+No radius is measured from viewport boundaries.
+
+Responsive layouts modify radius values only.
+
+They never relocate the center.
+
+---
+
+# Angular Position
+
+Every floating object owns an angle.
+
+```
+0° → top
+90° → right
+180° → bottom
+270° → left
+```
+
+The angular value determines the object's position on its orbit.
+
+Objects never store absolute screen coordinates.
+
+Their visible position is derived from:
+
+- current angle
+- current radius
+- Unified Center
+
+---
+
+# Motion
+
+Movement is angular.
+
+Objects rotate around the Unified Center.
+
+Objects never translate independently across the screen unless explicitly designed to temporarily leave their orbit.
+
+Orbit motion remains continuous regardless of viewport size.
+
+---
+
+# Distribution Rules
+
+Floating objects should appear naturally balanced.
+
+The runtime should avoid:
+
+- large empty sectors
+- overlapping clusters
+- visually compressed regions
+- inconsistent spacing
+
+Distribution is evaluated visually rather than mathematically.
+
+Perfect symmetry is not required.
+
+Visual balance is required.
+
+---
+
+# Orbit Density
+
+Every orbit has a maximum comfortable density.
+
+When additional objects are introduced, the runtime should prefer:
+
+- increasing spacing
+- redistributing angles
+- increasing orbit radius when appropriate
+
+The runtime should avoid allowing objects to collide visually.
+
+---
+
+# Layer Depth
+
+Depth is represented by orbit distance rather than coordinate ownership.
+
+Objects farther from the center occupy larger orbit radii.
+
+Objects closer to the center occupy smaller orbit radii.
+
+Depth never introduces another coordinate system.
+
+---
+
+# Responsive Geometry
+
+Responsive behavior modifies geometry only.
+
+Examples include:
+
+- orbit radius
+- spacing
+- density
+- scaling
+- safe margins
+
+Responsive behavior never changes:
+
+- Unified Center
+- Orbit model
+- Coordinate space
+- Rotation origin
+
+The same mathematical model applies across all devices.
+
+Only the numerical values change.
+
+---
+
+# Collision Safety
+
+Objects should preserve a minimum visual separation.
+
+The runtime should prevent:
+
+- overlapping labels
+- token collisions
+- query collisions
+- intersections with the compass body
+
+Collision handling should be deterministic.
+
+Objects should never randomly jump between positions.
+
+---
+
+# Visual Balance
+
+The component should always appear centered.
+
+The visual weight should remain approximately balanced around the Unified Center.
+
+No viewport size should produce the perception that:
+
+- all elements shifted left
+- all elements shifted right
+- all elements shifted upward
+- all elements shifted downward
+
+The Unified Center remains the visual anchor under every responsive breakpoint.
+
+---
+
+# Future Compatibility
+
+Future floating elements automatically inherit:
+
+- Unified Center
+- Coordinate Space
+- Orbit Model
+- Distribution Rules
+- Collision Rules
+- Responsive Geometry
+
+Adding a new orbit family must never require introducing another coordinate system.
+
+The geometry model is intended to remain stable regardless of future component expansion.
+
+# Unified Component Structure
+
+## Purpose
+
+This section defines the required internal structure of the new Unified Ecosystem Component.
+
+The new component must be created in new files and remain isolated from the current Homepage implementation until it is approved.
+
+The current `.layer-ecosystem` and `.layer-compass` architecture must remain unchanged during development of the new component.
+
+---
+
+## Root Component
+
+The new system must have one root component.
+
+Recommended responsibility:
+
+```text
+UnifiedEcosystem
+```
+
+The exact filename may follow the existing project naming conventions, but the component must remain clearly separate from the current `Ecosystem.astro` and `Compass.astro` files.
+
+The root component owns:
+
+* the unified positioning context
+* the shared center
+* the Rings
+* the Compass
+* the Platform Tokens
+* the Query Pills
+* the runtime initialization target
+
+---
+
+## Target DOM Hierarchy
+
+The target hierarchy should remain simple.
+
+```text
+div.unified-ecosystem
+├── svg.unified-ecosystem__rings
+├── div.unified-ecosystem__objects
+│   ├── Platform Token × 12
+│   └── Query Pill × 12
+└── div.unified-ecosystem__compass
+    └── Compass SVG
+```
+
+The exact internal wrappers may change only when technically required.
+
+Additional wrappers must not be introduced without a clear layout, rendering, or accessibility purpose.
+
+---
+
+## Root Positioning Context
+
+`.unified-ecosystem` is the only positioning context for all component elements.
+
+It must use:
+
+```css
+position: relative;
+```
+
+The Rings, Compass, Platform Tokens, and Query Pills must all be positioned relative to this root.
+
+No internal element may use the viewport or document as its positioning container.
+
+---
+
+## Shared Center Representation
+
+The root component must expose one center to all descendants.
+
+The center may be represented by:
+
+* local runtime coordinates
+* CSS custom properties
+* a shared runtime state object
+
+The implementation must not maintain separate center values for the Compass and floating objects.
+
+The required relationship is:
+
+```text
+Compass Center
+=
+Ring Center
+=
+Platform Orbit Center
+=
+Query Orbit Center
+=
+Unified Component Center
+```
+
+---
+
+## Internal Rendering Groups
+
+The component may contain separate rendering groups for clarity:
+
+```text
+Rings Group
+Objects Group
+Compass Group
+```
+
+These are internal rendering groups only.
+
+They do not own:
+
+* separate centers
+* separate responsive transforms
+* separate coordinate systems
+* separate layout origins
+
+---
+
+## Existing Child Components
+
+The current child component details should be reused where practical.
+
+This includes:
+
+* Platform Token markup
+* Platform icon SVGs
+* Platform labels
+* Query Pill markup
+* Compass SVG geometry
+* Compass needle geometry
+* Compass signal geometry
+* accessibility labels
+* typography
+* borders
+* opacity hierarchy
+
+Reusing these details does not require reusing the current parent architecture.
+
+The new root component must own the final placement and runtime behavior.
+
+---
+
+## Isolation Requirement
+
+The new component must initially be rendered only in an isolated development route or preview page.
+
+It must not be inserted into the production Homepage during the first implementation phase.
+
+The isolated preview must provide enough space to validate:
+
+* Desktop
+* Tablet
+* Mobile
+* Short mobile
+* RTL
+* Reduced motion
+* Pointer interaction
+* Orbit distribution
+
+---
+
+# Unified Rendering Pipeline
+
+## Purpose
+
+This section defines the required initialization and rendering sequence.
+
+The pipeline must remain deterministic and minimal.
+
+---
+
+## Static Rendering Phase
+
+During Astro rendering, the component must produce:
+
+1. The unified root container.
+2. The Rings.
+3. The Platform Token dataset.
+4. The Query Pill dataset.
+5. The floating-object DOM elements.
+6. The Compass SVG.
+7. The runtime data attributes or configuration required by the controller.
+
+The component must be visually present before JavaScript initialization.
+
+---
+
+## Runtime Initialization Phase
+
+After the component DOM exists, runtime initialization must occur in this order:
+
+1. Locate the Unified Ecosystem root.
+2. Read the component dimensions.
+3. Calculate the single local center.
+4. Read Platform Token and Query Pill orbit configuration.
+5. Locate the Compass needle and signal elements.
+6. Initialize the shared pointer tracker.
+7. Initialize the unified runtime state.
+8. Write the initial positions.
+9. Start the animation loop.
+10. Register resize, visibility, motion-preference, and teardown handlers.
+
+Initialization must stop safely if the required root or critical Compass elements are missing.
+
+---
+
+## Frame Rendering Order
+
+Each animation frame should perform the following operations:
+
+1. Read current component dimensions if invalidated.
+2. Read the current pointer state.
+3. Determine the active Compass target.
+4. Update Compass inertia.
+5. Calculate the current Compass angle.
+6. Calculate every object's current orbit angle.
+7. Calculate every object's local position from the unified center.
+8. Apply optional parallax.
+9. Evaluate Compass-to-object angular focus.
+10. Write object transforms and focus classes.
+11. Render the Compass needle, tilt, and signal.
+12. Schedule the next frame.
+
+The order may be adjusted internally for efficiency, but the final state must be based on one synchronized runtime frame.
+
+---
+
+## Position Output
+
+Object positions must be written as local component coordinates.
+
+Preferred output:
+
+```css
+--orbit-x
+--orbit-y
+```
+
+These values must represent local coordinates inside the unified root.
+
+The final object transform must center the object's own box on the calculated position.
+
+The implementation must not write viewport-based coordinates into child elements.
+
+---
+
+## Rendering Order
+
+The visual paint order must be:
+
+```text
+Rings
+Query Pills
+Platform Tokens
+Compass
+```
+
+The Compass must remain visually above all floating objects.
+
+The complete unified component must remain below the Homepage content, Header, and Footer when it is eventually integrated.
+
+---
+
+## Resize Pipeline
+
+On resize:
+
+1. Remeasure the unified root.
+2. Recalculate the shared center.
+3. Recalculate responsive orbit values.
+4. Recalculate safe boundaries.
+5. Re-render all object positions from the same center.
+
+Resize must not create a second runtime instance.
+
+Resize must not restart the full component unless technically unavoidable.
+
+---
+
+## Reduced-Motion Pipeline
+
+When reduced motion is active:
+
+* Continuous orbit movement must stop.
+* Compass breathing and tilt must stop.
+* Object positions must remain based on the unified center.
+* The same responsive geometry must remain active.
+* Objects must not revert to a separate coordinate formula.
+* The component must remain fully visible and understandable.
+
+---
+
+## Teardown Pipeline
+
+The component must expose one cleanup path.
+
+Cleanup must remove:
+
+* the animation frame
+* pointer listeners
+* resize listeners
+* visibility listeners
+* motion-preference listeners
+
+The component must not leave duplicate listeners or runtime loops after Astro navigation.
+
+---
+
+# Unified Runtime Responsibilities
+
+## Purpose
+
+This section defines the minimum runtime responsibilities required to implement the new component without introducing unnecessary abstraction.
+
+The implementation may use one controller file or a small number of focused helper files.
+
+The architecture must remain easy to inspect.
+
+---
+
+## Root Controller
+
+The root runtime controller is responsible for:
+
+* component initialization
+* DOM discovery
+* shared state ownership
+* one animation loop
+* responsive mode detection
+* unified center calculation
+* object position updates
+* Compass target integration
+* focus-state updates
+* lifecycle cleanup
+
+There must not be one independent Compass runtime and another independent Ecosystem runtime exchanging coordinates.
+
+---
+
+## Geometry Responsibility
+
+The geometry logic is responsible for:
+
+* reading root width and height
+* calculating the unified center
+* resolving responsive orbit radii
+* converting angle and radius into local X/Y coordinates
+* applying optional elliptical scaling
+* enforcing Compass clearance
+* producing finite local positions
+
+The geometry logic must remain independent from DOM naming where practical.
+
+---
+
+## Orbit Responsibility
+
+The orbit logic is responsible for:
+
+* current angle
+* initial phase
+* radius
+* speed
+* direction
+* object family
+* responsive radius configuration
+
+The existing deterministic motion model should be preserved unless the new component specification explicitly changes it.
+
+No random angle or radius generation is allowed.
+
+---
+
+## Distribution Responsibility
+
+Initial distribution must be defined through explicit dataset values or deterministic formulas.
+
+The runtime must not continuously rearrange objects.
+
+The runtime may support predefined responsive configurations for:
+
+* Desktop
+* Tablet
+* Mobile
+* Short mobile
+
+These configurations must preserve the same unified center.
+
+---
+
+## Pointer Responsibility
+
+The component must use one pointer tracker.
+
+The tracking surface must be the unified component root or a clearly defined interaction surface inside it.
+
+Pointer state may affect:
+
+* Compass direction
+* Compass tilt
+* Signal stretch
+* object parallax
+
+Pointer state must not alter the component center.
+
+---
+
+## Compass Responsibility
+
+The Compass runtime is responsible for:
+
+* target angle selection
+* shortest-path angle movement
+* needle rendering
+* optional tilt
+* signal stretch
+* exposing the current angle for focus evaluation
+
+The Compass does not own a separate coordinate system.
+
+Its pivot is the unified center.
+
+---
+
+## Focus Responsibility
+
+Focus is determined by comparing:
+
+* the current Compass angle
+* the current object angle
+
+The existing angular threshold may be reused initially.
+
+Focus must not be calculated from unrelated screen rectangles.
+
+A focused object may change:
+
+* opacity
+* visual scale
+
+Focus must not change the object's orbit center.
+
+---
+
+## Responsive Responsibility
+
+The responsive configuration controls:
+
+* Compass size
+* Platform orbit radii
+* Query orbit radii
+* token scale
+* query scale or visibility
+* layer density
+* safe boundaries
+* target cadence where necessary
+
+It must not control the center independently for different object families.
+
+---
+
+## Collision Responsibility
+
+The first implementation does not require a complex real-time collision engine.
+
+Collision safety should initially be achieved through:
+
+* explicit orbit radii
+* explicit starting phases
+* controlled token scale
+* controlled query visibility
+* responsive dataset values
+* runtime validation
+
+A dynamic collision solver must not be introduced unless static responsive configuration proves insufficient.
+
+---
+
+## State Ownership
+
+The unified controller should own one state object containing only required runtime values.
+
+Example responsibility groups:
+
+```text
+dimensions
+center
+pointer
+responsive mode
+needle state
+object descriptors
+motion preference
+animation frame
+```
+
+No duplicated center or breakpoint state should exist in separate modules.
+
+---
+
+# Current-to-Target Migration Mapping
+
+## Purpose
+
+This section defines which existing details are reused, replaced, or excluded while building the new isolated component.
+
+The current production implementation must remain untouched during this phase.
+
+---
+
+## Reuse Without Redesign
+
+The following details should be reused as the visual and behavioral reference:
+
+* all 12 Platform Tokens
+* Platform names and IDs
+* Platform icon SVGs
+* Platform Token visual styles
+* all 12 Query Pill strings
+* Query language and direction
+* Query Pill visual styles
+* Compass SVG geometry
+* Compass rings and graduation marks
+* Compass hub
+* Compass needle
+* Compass signal
+* Platform orbit speed
+* Query orbit speed
+* pointer angle behavior
+* shortest-path Compass inertia
+* focus concept
+* reduced-motion support
+* accessibility labels
+* Thmanyah Sans typography
+* current color tokens
+
+These details may be copied into new files or reused through existing child components where this does not preserve the old two-layer architecture.
+
+---
+
+## Rebuild
+
+The following parts must be rebuilt for the new component:
+
+* root component structure
+* unified root container
+* local coordinate system
+* center calculation
+* orbit positioning
+* responsive geometry
+* component-level pointer tracking
+* runtime state ownership
+* animation-loop ownership
+* resize handling
+* lifecycle integration
+* isolated preview route
+
+---
+
+## Remove From the New Architecture
+
+The following current behaviors must not be carried into the new component:
+
+* separate `.layer-ecosystem`
+* separate `.layer-compass`
+* separate Compass and Ecosystem centers
+* object coordinates based on `window.innerWidth / 2`
+* object coordinates based on `window.innerHeight / 2`
+* the current `+10px` center mismatch
+* the wide-screen horizontal center mismatch
+* independent responsive transforms for the two systems
+* correction offsets used to visually compensate for different centers
+* mobile Query Pill `translateY(-180px)` as a substitute for proper geometry
+* separate Compass and Ecosystem RAF systems
+* state exchange between two independent runtime controllers
+
+---
+
+## Preserve Temporarily in Production
+
+Until the new component is approved, the following current files and behavior remain unchanged:
+
+* `src/components/Ecosystem.astro`
+* `src/components/Compass.astro`
+* `src/scripts/ecosystem.js`
+* `src/scripts/compass.js`
+* current Homepage layer markup
+* current Homepage runtime initialization
+* current production responsive behavior
+
+The isolated implementation must not rename, delete, or repurpose these files.
+
+---
+
+## New Files
+
+The implementation should create new files instead of modifying the current production files.
+
+A minimal target structure may be:
+
+```text
+src/components/unified-ecosystem/
+├── UnifiedEcosystem.astro
+├── UnifiedPlatformToken.astro
+├── UnifiedQueryPill.astro
+└── unified-ecosystem.js
+```
+
+Existing icon components and shared motion helpers may be reused when suitable.
+
+The final filenames may follow project conventions, but the separation from the current implementation must remain obvious.
+
+---
+
+## Preview Integration
+
+A separate preview page must render the new component.
+
+Example responsibility:
+
+```text
+src/pages/unified-ecosystem-preview.astro
+```
+
+The route name is not mandatory.
+
+The important requirement is that the preview:
+
+* does not affect the Homepage
+* uses the real project styles and fonts
+* provides a clear viewport for testing
+* allows responsive inspection
+* allows runtime interaction testing
+
+---
+
+## Migration Gate
+
+The new component must not replace the current Homepage implementation until all of the following are approved:
+
+* unified center alignment
+* Compass alignment
+* Rings alignment
+* Platform Token distribution
+* Query Pill distribution
+* Desktop layout
+* Tablet layout
+* Mobile layout
+* Short-mobile layout
+* pointer interaction
+* ambient targeting
+* focus behavior
+* reduced motion
+* performance
+* cleanup behavior
+
+---
+
+## Final Replacement Phase
+
+After approval:
+
+1. Render the new component inside the appropriate Homepage layer.
+2. Remove the old `layer-ecosystem` and `layer-compass` instances.
+3. Remove the old Homepage runtime initialization.
+4. Preserve the existing Homepage content, Header, Footer, and stacking order.
+5. Run full production validation.
+6. Delete legacy component files only after confirming they have no remaining imports.
+
+The replacement phase is outside the current isolated implementation scope.
